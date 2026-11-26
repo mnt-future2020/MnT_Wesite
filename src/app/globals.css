@@ -1,26 +1,424 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Google Sans for everything. next/font sets it on <html> in the root layout. */
+  --font-sans: var(--font-google-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-heading: var(--font-google-sans, ui-sans-serif, system-ui, sans-serif);
+
+  /* Palette colours: the same in light and dark sections (bg-p1, from-p2, text-ink, ...).
+     The palette switch changes the --p-* values below. */
+  --color-p1: var(--p-1);
+  --color-p1-soft: var(--p-1-soft);
+  --color-p2: var(--p-2);
+  --color-tint-1: var(--p-tint-1);
+  --color-tint-2: var(--p-tint-2);
+  --color-tint-3: var(--p-tint-3);
+  --color-ink: var(--p-ink);
+  /* Soft fills on light sections (always used see-through: bg-wash-1/20, from-wash-2/15 ...). */
+  --color-wash-1: var(--p-wash-1);
+  --color-wash-2: var(--p-wash-2);
+  --color-wash-3: var(--p-wash-3);
+
+  /* MnT Future brand colours (switch with the theme). */
+  --color-brand: var(--brand);
+  --color-live: var(--live);
+  --color-star: var(--star-rating);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+ * The page mixes light and dark sections.
+ * Light is the default. Add class "dark" (plus bg-background text-foreground)
+ * to a section to make that section dark. Buttons are "ink": black on light
+ * sections, white on dark sections.
+ */
+
+/* Light sections */
+:root {
+  /* ---- The colour palette ----
+     Every brand colour on the site comes from these lines. The palette switch
+     (src/components/site/palette-switch.tsx) overrides them on <html>. */
+  --p-1: #3b5bff; /* main brand colour (large areas: gradients, bars, panels) */
+  --p-1-text: #3b5bff; /* main colour for small text on light sections (must stay readable) */
+  --p-1-light: #8da2ff; /* main colour on dark sections */
+  --p-1-soft: #c3cdff; /* very light main colour, for text on dark */
+  --p-2: #7c3aed; /* second colour (gradients) */
+  --p-2-light: #c4a1ff;
+  --p-3: #0891b2; /* third colour (accents) */
+  --p-3-light: #67e8f9;
+  /* The second and third colours used INSIDE dark sections (a palette can give
+     dark sections a different second or third colour from light ones). */
+  --p-2-on-dark: var(--p-2);
+  --p-3-on-dark: var(--p-3);
+  /* Colours for soft, see-through fills on light sections (picture backgrounds,
+     product tiles, glows). A deep colour turns grey when faded, so a palette can
+     choose brighter ones here. */
+  --p-wash-1: var(--p-1);
+  --p-wash-2: var(--p-2);
+  --p-wash-3: var(--p-3);
+  --p-tint-1: #e6eaff; /* pale panel gradient */
+  --p-tint-2: #efeaff;
+  --p-tint-3: #e3f3f8;
+  --p-ink: #0b1024; /* text and buttons on light sections */
+
+  --background: #f7f8fc;
+  --foreground: var(--p-ink);
+  --card: #ffffff;
+  --card-foreground: var(--p-ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--p-ink);
+  --primary: var(--p-ink);
+  --primary-foreground: #ffffff;
+  --secondary: #eef0f8;
+  --secondary-foreground: var(--p-ink);
+  --muted: #eef0f8;
+  --muted-foreground: #556080;
+  --accent: #eef0f8;
+  --accent-foreground: var(--p-ink);
+  --destructive: #e5484d;
+  --border: #e2e6f0;
+  --input: #e2e6f0;
+  --ring: var(--p-1);
+  --radius: 0.75rem;
+
+  --brand: var(--p-1-text);
+  --live: #059669;
+  --star-rating: #f5a700;
+
+  /* Hero background (soft glows use the wash colours) */
+  --glow-1: color-mix(in srgb, var(--p-wash-1) 20%, transparent);
+  --glow-2: color-mix(in srgb, var(--p-wash-2) 16%, transparent);
+  --glow-3: color-mix(in srgb, var(--p-wash-3) 14%, transparent);
+  --grid-line: color-mix(in srgb, var(--p-1) 16%, transparent);
+  --dot: color-mix(in srgb, var(--p-ink) 12%, transparent);
+}
+
+/* Dark sections */
+.dark {
+  --background: #060914;
+  --foreground: #edf0fa;
+  --card: #0c1122;
+  --card-foreground: #edf0fa;
+  --popover: #0c1122;
+  --popover-foreground: #edf0fa;
+  --primary: #f4f5f8;
+  --primary-foreground: var(--p-ink);
+  --secondary: #141a30;
+  --secondary-foreground: #edf0fa;
+  --muted: #141a30;
+  --muted-foreground: #98a2c0;
+  --accent: #141a30;
+  --accent-foreground: #edf0fa;
+  --destructive: #ff6369;
+  --border: rgb(255 255 255 / 0.09);
+  --input: rgb(255 255 255 / 0.12);
+  --ring: var(--p-1-light);
+
+  --brand: var(--p-1-light);
+  --live: #34d399;
+  --star-rating: #fbbf24;
+
+  --glow-1: color-mix(in srgb, var(--p-1) 42%, transparent);
+  --glow-2: color-mix(in srgb, var(--p-2) 32%, transparent);
+  --glow-3: color-mix(in srgb, var(--p-3) 24%, transparent);
+  --grid-line: color-mix(in srgb, var(--p-1-light) 20%, transparent);
+  --dot: rgb(255 255 255 / 0.28);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------- Text ---------- */
+
+/* Gradient text in the palette's own colours (the logo blue in the logo palette). */
+.text-gradient {
+  background-image: linear-gradient(
+    90deg,
+    var(--p-1),
+    var(--p-2),
+    var(--p-3),
+    var(--p-1)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding-bottom: 0.08em;
+  animation: mnt-shimmer 10s linear infinite;
+}
+
+@keyframes mnt-shimmer {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* ---------- Hero background ---------- */
+
+.hero-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.hero-blob-a {
+  width: 44rem;
+  height: 44rem;
+  left: -12rem;
+  top: -14rem;
+  background: var(--glow-1);
+  animation: hero-drift-a 18s ease-in-out infinite;
+}
+
+.hero-blob-b {
+  width: 38rem;
+  height: 38rem;
+  right: -10rem;
+  top: -8rem;
+  background: var(--glow-2);
+  animation: hero-drift-b 22s ease-in-out infinite;
+}
+
+.hero-blob-c {
+  width: 30rem;
+  height: 30rem;
+  left: 38%;
+  top: 34%;
+  background: var(--glow-3);
+  animation: hero-drift-c 26s ease-in-out infinite;
+}
+
+/* Phones and tablets only: smaller glows, so that (as on desktop) the corners glow and the
+   middle stays light. At full size the three glows would overlap across a narrow screen and
+   tint all of it purple. Desktop and laptop screens (1024px and wider) keep the original
+   glows above. Do not change those. */
+@media (max-width: 1023px) {
+  .hero-blob-a {
+    width: 34rem;
+    height: 34rem;
+    left: -11rem;
+    top: -11rem;
+  }
+  .hero-blob-b {
+    width: 30rem;
+    height: 30rem;
+    right: -10rem;
+    top: -4rem;
+  }
+  .hero-blob-c {
+    width: 24rem;
+    height: 24rem;
+    left: 38%;
+    top: 40%;
+  }
+}
+
+@media (max-width: 639px) {
+  .hero-blob {
+    filter: blur(64px);
+  }
+  .hero-blob-a {
+    width: 22rem;
+    height: 22rem;
+    left: -8rem;
+    top: -7rem;
+  }
+  .hero-blob-b {
+    width: 20rem;
+    height: 20rem;
+    right: -8rem;
+    top: 8rem;
+  }
+  .hero-blob-c {
+    width: 15rem;
+    height: 15rem;
+    left: 25%;
+    top: 52%;
+  }
+}
+
+@keyframes hero-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12%, 10%, 0) scale(1.12);
+  }
+}
+
+@keyframes hero-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-14%, 12%, 0) scale(1.08);
+  }
+}
+
+@keyframes hero-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-18%, -14%, 0) scale(1.2);
+  }
+}
+
+/* A slow glowing ring behind the headline. */
+.hero-ring {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: min(68rem, 130vw);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 9999px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--glow-1) 50deg,
+    transparent 110deg,
+    var(--glow-2) 190deg,
+    transparent 250deg,
+    var(--glow-3) 310deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(closest-side, transparent 60%, #000 63%, #000 66%, transparent 71%);
+  mask: radial-gradient(closest-side, transparent 60%, #000 63%, #000 66%, transparent 71%);
+  filter: blur(14px);
+  animation: hero-spin 40s linear infinite;
+}
+
+/* Phones only (it must come after .hero-ring above to take effect). The headline wraps to
+   4-5 lines there, so the text is taller than the desktop-sized ring (about 330px across).
+   A bigger ring keeps the whole text inside it, as on desktop; its sides fall just off the
+   screen edges. Tablets and desktops keep the ring above. */
+@media (max-width: 639px) {
+  .hero-ring {
+    width: 54rem;
+  }
+}
+
+@keyframes hero-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Fine dot texture near the headline. */
+.hero-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse 55% 45% at 50% 38%, #000 10%, transparent 75%);
+  mask-image: radial-gradient(ellipse 55% 45% at 50% 38%, #000 10%, transparent 75%);
+  opacity: 0.6;
+}
+
+/* A grid floor moving towards the viewer. */
+.hero-floor {
+  position: absolute;
+  left: -50%;
+  right: -50%;
+  bottom: 0;
+  height: 52%;
+  perspective: 480px;
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 30%, #000 55%, transparent 100%);
+  mask-image: linear-gradient(to top, transparent 0%, #000 30%, #000 55%, transparent 100%);
+}
+
+.hero-floor-grid {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  transform: rotateX(64deg);
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  animation: hero-floor 3.2s linear infinite;
+}
+
+@keyframes hero-floor {
+  to {
+    background-position: 0 64px;
+  }
+}
+
+/* ---------- Hero entrance ---------- */
+
+.hero-rise {
+  animation: hero-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-anim,
+  .hero-anim *,
+  .hero-rise,
+  .text-gradient {
+    animation: none !important;
+  }
 }
