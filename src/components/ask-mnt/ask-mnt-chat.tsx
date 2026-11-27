@@ -39,8 +39,8 @@ export function AskMntChat({ variant }: { variant: "panel" | "sheet" }) {
     setDraft("");
   }
 
-  // On phones the sheet covers the page, so following a "From:" link closes it.
-  const onLink = variant === "sheet" ? closeAskMnt : undefined;
+  // On phones the sheet covers the page, so following a "From:" link closes it first.
+  const closeOnLink = variant === "sheet";
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -97,7 +97,7 @@ export function AskMntChat({ variant }: { variant: "panel" | "sheet" }) {
           ) : null}
 
           {messages.map((message) => (
-            <Message key={message.id} message={message} onLink={onLink} />
+            <Message key={message.id} message={message} closeOnLink={closeOnLink} />
           ))}
 
           {thinking ? <Thinking /> : null}
@@ -135,7 +135,33 @@ export function AskMntChat({ variant }: { variant: "panel" | "sheet" }) {
   );
 }
 
-function Message({ message, onLink }: { message: ChatMessage; onLink?: () => void }) {
+/** How long the phone sheet takes to slide away and let the page move again. */
+const SHEET_CLOSE_MS = 400;
+
+/**
+ * A "From:" link points at a section, such as /#straight-answers. When that section is
+ * on the page already open, scroll to it here: Next.js does not move for a section of
+ * the page you are on, and the phone sheet holds the page still until it has closed.
+ * On any other page the link simply opens the homepage at that section.
+ */
+function followSource(event: React.MouseEvent<HTMLAnchorElement>, closeFirst: boolean) {
+  // Ctrl/Cmd/Shift-click opens a new tab or window: leave that to the browser.
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  if (closeFirst) closeAskMnt();
+
+  const url = new URL(event.currentTarget.href);
+  const section =
+    url.pathname === window.location.pathname && url.hash ? document.getElementById(url.hash.slice(1)) : null;
+  if (!section) return;
+
+  event.preventDefault();
+  const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const scroll = () => section.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+  if (closeFirst) window.setTimeout(scroll, SHEET_CLOSE_MS);
+  else scroll();
+}
+
+function Message({ message, closeOnLink }: { message: ChatMessage; closeOnLink: boolean }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
@@ -158,7 +184,7 @@ function Message({ message, onLink }: { message: ChatMessage; onLink?: () => voi
           {message.source && !message.typing ? (
             <Link
               href={message.source.href}
-              onClick={onLink}
+              onClick={(event) => followSource(event, closeOnLink)}
               className="mt-2 inline-flex items-center gap-1 rounded-full border border-border bg-background px-2.5 py-1 text-xs font-medium text-brand transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
               From: {message.source.label}
