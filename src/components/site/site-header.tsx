@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
-import { nav, primaryCta } from "@/content/site";
+import { primaryCta } from "@/content/site";
 import { HeaderTheme } from "./header-theme";
+import { MainNav } from "./main-nav";
 import { MobileNav } from "./mobile-nav";
 
 /**
@@ -20,20 +21,8 @@ export function SiteHeader() {
           <Logo className="h-7" priority />
         </Link>
 
-        <nav aria-label="Main" className="hidden lg:block">
-          <ul className="flex items-center gap-1">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="rounded-full px-3.5 py-2 text-base text-foreground transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring dark:text-white dark:hover:bg-white/10"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* Desktop: Services ▾ · Work · Company ▾ (dropdown panels). Phones and tablets: the menu button. */}
+        <MainNav />
 
         <div className="flex items-center gap-1">
           <Link

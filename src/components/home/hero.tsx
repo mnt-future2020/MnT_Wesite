@@ -2,15 +2,16 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { ArrowRightIcon, StarIcon } from "lucide-react";
 import { company, heroIntro, primaryCta } from "@/content/site";
+import { laptopGlowA, laptopGlowB, laptopGlowC } from "@/components/site/hero-glow";
 
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as CSSProperties;
 
 function HeroBackground() {
   return (
     <div aria-hidden="true" className="hero-anim pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-      <div className="hero-blob hero-blob-a" />
-      <div className="hero-blob hero-blob-b" />
-      <div className="hero-blob hero-blob-c" />
+      <div className={`hero-blob hero-blob-a ${laptopGlowA}`} />
+      <div className={`hero-blob hero-blob-b ${laptopGlowB}`} />
+      <div className={`hero-blob hero-blob-c ${laptopGlowC}`} />
       <div className="hero-ring" />
       <div className="hero-dots" />
       <div className="hero-floor">

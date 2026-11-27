@@ -13,31 +13,33 @@ import {
   useScroll,
   useTransform,
 } from "motion/react";
-import { lines, whatWeBuild, type Line } from "@/content/site";
+import { serviceGroups, whatWeBuild, type ServiceArea, type ServiceGroup } from "@/content/site";
 import { cn } from "@/lib/utils";
-import { AgentVisual, AppsVisual, StoreVisual } from "./service-visuals";
+import { AgentVisual, AppsVisual, CloudVisual, DataVisual } from "./service-visuals";
 
 /*
- * Light section with a tab bar: Ecommerce | AI systems | Ready apps.
+ * Light section with a tab bar: AI | Software & apps | Data & integration | Cloud & security.
+ * The four tabs hold the service areas (see serviceGroups in site.ts).
  *
  * Desktop (1024px and wider): the section pins while you scroll (about 1.2
  * screens of scrolling per tab), and the active tab moves to the right as you go.
- * One box below the tabs shows the active service: text and list on the left,
- * the product window picture on a soft gradient on the right.
+ * One box below the tabs shows the active tab: its areas as a list on the left
+ * (open one to see its services), the product picture on a soft gradient on the right.
  *
  * Phones and tablets: the tab bar is its own card that sticks under the
- * header. Below it, the three services are separate cards with space between
+ * header. Below it, the four tabs are separate cards with space between
  * them. The active tab follows your scroll; tapping a tab scrolls to its card.
  */
 
-const TAB_COUNT = lines.length;
+const TAB_COUNT = serviceGroups.length;
 const EASE = [0.16, 1, 0.3, 1] as const;
 const DESKTOP = "(min-width: 1024px)";
 
-const visuals: Record<Line["id"], React.ComponentType> = {
-  ecommerce: StoreVisual,
+const visuals: Record<ServiceGroup["id"], React.ComponentType> = {
   ai: AgentVisual,
-  products: AppsVisual,
+  software: AppsVisual,
+  data: DataVisual,
+  cloud: CloudVisual,
 };
 
 /** Space taken by the floating header, so content is not hidden under it. */
@@ -50,7 +52,7 @@ export function WhatWeBuild() {
   const tabBarRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
-  const line = lines[active];
+  const group = serviceGroups[active];
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -114,8 +116,8 @@ export function WhatWeBuild() {
       aria-labelledby="what-we-build-title"
       data-header-theme="light"
       // A plain full-width section, not a rounded card. Desktop height sets the scroll speed:
-      // 450svh gives each tab a little over one screen of scrolling.
-      className="relative bg-background text-foreground lg:h-[450svh]"
+      // 560svh gives each of the four tabs a little over one screen of scrolling.
+      className="relative bg-background text-foreground lg:h-[560svh]"
     >
       <div className="lg:sticky lg:top-0 lg:flex lg:h-svh lg:flex-col">
         <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-5 pt-24 pb-16 sm:px-8 lg:min-h-0 lg:pb-6 lg:[@media(max-height:820px)]:pt-20 lg:[@media(max-height:820px)]:pb-4">
@@ -142,8 +144,8 @@ export function WhatWeBuild() {
               aria-label="What we build"
               className="z-20 shrink-0 overflow-hidden border-border bg-card max-lg:sticky max-lg:top-19 max-lg:rounded-xl max-lg:border max-lg:shadow-[0_12px_28px_-16px_rgb(11_16_36/0.35)] sm:max-lg:top-20 lg:border-b"
             >
-              <div className="grid grid-cols-3">
-                {lines.map((tab, index) => {
+              <div className="grid grid-cols-4">
+                {serviceGroups.map((tab, index) => {
                   const isActive = index === active;
                   return (
                     <button
@@ -167,7 +169,9 @@ export function WhatWeBuild() {
                           style={{ scaleX: tabProgress }}
                         />
                       ) : null}
-                      <span className="relative">{whatWeBuild.menuLabels[tab.id]}</span>
+                      {/* Phones get the short label, so four tabs fit in one row. */}
+                      <span className="relative sm:hidden">{tab.tabShort}</span>
+                      <span className="relative max-sm:hidden">{tab.tab}</span>
                     </button>
                   );
                 })}
@@ -176,11 +180,11 @@ export function WhatWeBuild() {
 
             {/* Desktop: one service at a time. */}
             <div className="hidden lg:grid lg:grid-cols-2">
-              {/* The texts of all three tabs share one cell, so the box is always as tall as the
+              {/* The texts of all four tabs share one cell, so the box is always as tall as the
                   tallest tab and keeps the same size in every tab. Only the active one is
                   visible; the others are hidden and cannot be focused. */}
               <div className="grid">
-                {lines.map((item, index) => {
+                {serviceGroups.map((item, index) => {
                   const isActive = index === active;
                   return (
                     <div
@@ -192,17 +196,17 @@ export function WhatWeBuild() {
                         isActive ? "translate-y-0 opacity-100" : "invisible translate-y-2 opacity-0"
                       )}
                     >
-                      <TabText line={item} active={isActive} />
+                      <TabText group={item} active={isActive} />
                     </div>
                   );
                 })}
               </div>
-              <VisualPanel line={line} animate />
+              <VisualPanel group={group} animate />
             </div>
 
-            {/* Phones and tablets: three separate cards with space between them. */}
+            {/* Phones and tablets: four separate cards with space between them. */}
             <div className="mt-5 grid gap-5 lg:hidden">
-              {lines.map((item, index) => (
+              {serviceGroups.map((item, index) => (
                 <div
                   key={item.id}
                   ref={(element) => {
@@ -210,8 +214,8 @@ export function WhatWeBuild() {
                   }}
                   className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_24px_60px_-30px_rgb(11_16_36/0.18)]"
                 >
-                  <TabText line={item} />
-                  <VisualPanel line={item} />
+                  <TabText group={item} />
+                  <VisualPanel group={item} />
                 </div>
               ))}
             </div>
@@ -222,19 +226,19 @@ export function WhatWeBuild() {
   );
 }
 
-/** The picture side. Phones and tablets show the card's own picture; desktop (`animate`) keeps all three. */
-function VisualPanel({ line, animate = false }: { line: Line; animate?: boolean }) {
-  const Visual = visuals[line.id];
+/** The picture side. Phones and tablets show the card's own picture; desktop (`animate`) keeps all four. */
+function VisualPanel({ group, animate = false }: { group: ServiceGroup; animate?: boolean }) {
+  const Visual = visuals[group.id];
   return (
     <div className="relative flex items-center justify-center overflow-hidden border-t border-border bg-linear-to-br from-wash-1/30 via-wash-2/22 to-wash-3/25 p-6 sm:p-10 lg:border-t-0 lg:border-l lg:p-8 lg:[@media(max-height:820px)]:p-6">
       {animate ? (
-        // Desktop: all three pictures share one cell (like the texts), so this side keeps the
+        // Desktop: all four pictures share one cell (like the texts), so this side keeps the
         // same height in every tab; only the active picture is visible. On short screens the
         // pictures are zoomed down (zoom, unlike a transform, also shrinks the space they take).
         <div aria-hidden="true" className="grid w-full max-w-xl lg:[@media(max-height:820px)]:[zoom:0.82]">
-          {lines.map((item) => {
+          {serviceGroups.map((item) => {
             const ItemVisual = visuals[item.id];
-            const isActive = item.id === line.id;
+            const isActive = item.id === group.id;
             return (
               <div
                 key={item.id}
@@ -305,7 +309,7 @@ function AutoplayBar({ paused, onDone }: { paused: boolean; onDone: () => void }
   );
 }
 
-function TabText({ line, active = true }: { line: Line; active?: boolean }) {
+function TabText({ group, active = true }: { group: ServiceGroup; active?: boolean }) {
   const [openItem, setOpenItem] = useState(0);
   // The list moves on its own like a carousel. It pauses while hovered,
   // while something inside has keyboard focus, while it is off screen,
@@ -317,7 +321,7 @@ function TabText({ line, active = true }: { line: Line; active?: boolean }) {
   const paused = hovered || focused || !inView || !active;
 
   function showNext() {
-    setOpenItem((current) => (current + 1) % line.services.length);
+    setOpenItem((current) => (current + 1) % group.areas.length);
   }
 
   return (
@@ -326,23 +330,24 @@ function TabText({ line, active = true }: { line: Line; active?: boolean }) {
     <div>
       <div className="p-6 sm:p-8 lg:[@media(max-height:820px)]:px-7 lg:[@media(max-height:820px)]:py-5">
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-          <p className="text-sm font-medium text-brand">{line.name}</p>
+          <p className="text-sm font-medium text-brand">{group.label}</p>
           <Link
-            href={line.href}
+            href={group.link.href}
             className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
           >
-            {whatWeBuild.linkLabels[line.id]}
+            {group.link.label}
             <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
           </Link>
         </div>
         <h3 className="mt-3 font-heading text-[clamp(1.75rem,2.4vw,2.25rem)] leading-[1.05] font-medium tracking-[-0.03em] text-balance lg:[@media(max-height:820px)]:mt-2 lg:[@media(max-height:820px)]:text-[1.625rem]">
-          {line.headline}
+          {group.headline}
         </h3>
         <p className="mt-3 max-w-lg leading-[1.4] text-foreground lg:[@media(max-height:940px)]:hidden">
-          {line.lead}
+          {group.lead}
         </p>
       </div>
 
+      {/* The tab's service areas. The open one shows its services. */}
       <ul
         ref={listRef}
         onMouseEnter={() => setHovered(true)}
@@ -356,10 +361,10 @@ function TabText({ line, active = true }: { line: Line; active?: boolean }) {
         }}
         className="border-t border-border"
       >
-        {line.services.map((service, index) => {
+        {group.areas.map((area, index) => {
           const isOpen = index === openItem;
           return (
-            <li key={service.href} className="relative border-b border-border last:border-b-0">
+            <li key={area.href} className="relative border-b border-border last:border-b-0">
               {isOpen ? (
                 <>
                   {/* Track, and a bar that fills over a few seconds before the next item opens. */}
@@ -376,7 +381,7 @@ function TabText({ line, active = true }: { line: Line; active?: boolean }) {
                   isOpen ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {service.name}
+                {area.name}
                 <ChevronDownIcon
                   aria-hidden="true"
                   className={cn("size-4 shrink-0 transition-transform duration-300", isOpen && "rotate-180")}
@@ -391,15 +396,7 @@ function TabText({ line, active = true }: { line: Line; active?: boolean }) {
                     transition={{ duration: 0.3, ease: EASE }}
                     className="overflow-hidden"
                   >
-                    <p className="px-6 pb-4 text-sm leading-[1.4] text-foreground sm:px-8 lg:pb-3.5 lg:[@media(max-height:820px)]:pb-3">
-                      {service.summary}{" "}
-                      <Link
-                        href={service.href}
-                        className="font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-ring"
-                      >
-                        Learn more
-                      </Link>
-                    </p>
+                    <AreaServices area={area} />
                   </motion.div>
                 ) : null}
               </AnimatePresence>
@@ -407,6 +404,30 @@ function TabText({ line, active = true }: { line: Line; active?: boolean }) {
           );
         })}
       </ul>
+    </div>
+  );
+}
+
+/** An open area: its services in two columns (one on phones), then a link to its page. */
+function AreaServices({ area }: { area: ServiceArea }) {
+  return (
+    <div className="px-6 pb-4 sm:px-8 lg:pb-3.5 lg:[@media(max-height:820px)]:pb-3">
+      {/* Two columns of up to four rows, filled top to bottom, so every area takes the same
+          height (some have six services, some seven) and the box does not jump as the list moves. */}
+      <ul className="grid gap-x-6 gap-y-1.5 text-sm leading-[1.4] text-foreground sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-4 lg:[@media(max-height:820px)]:gap-y-1">
+        {area.services.map((service) => (
+          <li key={service.name} className="flex gap-2.5">
+            <span aria-hidden="true" className="mt-[0.6em] size-1 shrink-0 rounded-full bg-brand" />
+            {service.name}
+          </li>
+        ))}
+      </ul>
+      <Link
+        href={area.href}
+        className="mt-3 inline-block text-sm font-medium text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-ring lg:[@media(max-height:820px)]:mt-2"
+      >
+        Learn more
+      </Link>
     </div>
   );
 }

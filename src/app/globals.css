@@ -12,7 +12,7 @@
   --font-heading: var(--font-google-sans, ui-sans-serif, system-ui, sans-serif);
 
   /* Palette colours: the same in light and dark sections (bg-p1, from-p2, text-ink, ...).
-     The palette switch changes the --p-* values below. */
+     The values are the --p-* lines in :root below. */
   --color-p1: var(--p-1);
   --color-p1-soft: var(--p-1-soft);
   --color-p2: var(--p-2);
@@ -64,31 +64,31 @@
 
 /* Light sections */
 :root {
-  /* ---- The colour palette ----
-     Every brand colour on the site comes from these lines. The palette switch
-     (src/components/site/palette-switch.tsx) overrides them on <html>. */
-  --p-1: #3b5bff; /* main brand colour (large areas: gradients, bars, panels) */
-  --p-1-text: #3b5bff; /* main colour for small text on light sections (must stay readable) */
-  --p-1-light: #8da2ff; /* main colour on dark sections */
-  --p-1-soft: #c3cdff; /* very light main colour, for text on dark */
-  --p-2: #7c3aed; /* second colour (gradients) */
-  --p-2-light: #c4a1ff;
-  --p-3: #0891b2; /* third colour (accents) */
-  --p-3-light: #67e8f9;
-  /* The second and third colours used INSIDE dark sections (a palette can give
-     dark sections a different second or third colour from light ones). */
-  --p-2-on-dark: var(--p-2);
-  --p-3-on-dark: var(--p-3);
-  /* Colours for soft, see-through fills on light sections (picture backgrounds,
-     product tiles, glows). A deep colour turns grey when faded, so a palette can
-     choose brighter ones here. */
-  --p-wash-1: var(--p-1);
-  --p-wash-2: var(--p-2);
-  --p-wash-3: var(--p-3);
-  --p-tint-1: #e6eaff; /* pale panel gradient */
-  --p-tint-2: #efeaff;
-  --p-tint-3: #e3f3f8;
-  --p-ink: #0b1024; /* text and buttons on light sections */
+  /* ---- The colour palette: the MnT Future logo colours ----
+     Chosen 2026-11-26. Every brand colour on the site comes from these lines.
+     From the logo: blue #2095f1 ("MnT" and the dots), indigo #3e51b6 (the shading in
+     the "M"); the logo's grey "Future" stays in the logo only. */
+  --p-1: #2095f1; /* the logo blue: large areas (gradients, bars, panels) */
+  --p-1-text: #1565c0; /* a deeper shade of it, so small text stays readable on light sections */
+  --p-1-light: #64b5f6; /* the logo blue lightened, for dark sections */
+  --p-1-soft: #bbdefb; /* very light blue, for text on dark */
+  --p-2: #0f2d64; /* deep navy: gradients on light sections go logo blue -> navy */
+  --p-2-light: #9fb6e0;
+  --p-3: #7cc0f7; /* a soft sky blue from the logo blue (accents) */
+  --p-3-light: #b3dbfb;
+  /* The second and third colours used INSIDE dark sections: the logo indigo and a light blue. */
+  --p-2-on-dark: #3e51b6;
+  --p-3-on-dark: #64b5f6;
+  /* Soft, see-through fills on light sections (picture backgrounds, product tiles, glows):
+     the logo's blue, indigo and a sky blue. Navy is not used here because faded navy looks grey. */
+  --p-wash-1: #2095f1;
+  --p-wash-2: #3e51b6;
+  --p-wash-3: #7cc0f7;
+  /* Soft neutral panels. */
+  --p-tint-1: #f3f6fa;
+  --p-tint-2: #eef2f7;
+  --p-tint-3: #f6f8fb;
+  --p-ink: #0c1a2e; /* a deep navy in the logo's blue family, for text and buttons */
 
   --background: #f7f8fc;
   --foreground: var(--p-ink);
@@ -172,7 +172,7 @@
 
 /* ---------- Text ---------- */
 
-/* Gradient text in the palette's own colours (the logo blue in the logo palette). */
+/* Gradient text in the palette's own colours (logo blue, navy, sky blue). */
 .text-gradient {
   background-image: linear-gradient(
     90deg,

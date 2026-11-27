@@ -1,4 +1,4 @@
-import { PaletteSwitch } from "@/components/site/palette-switch";
+import { SamePageScroll } from "@/components/site/same-page-scroll";
 import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
 
@@ -17,8 +17,8 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         {children}
       </main>
       <SiteFooter />
-      {/* TEMPORARY: colour palette switch for the senior's review. */}
-      <PaletteSwitch />
+      {/* A link to the page you are already on scrolls back to the top. */}
+      <SamePageScroll />
     </>
   );
 }

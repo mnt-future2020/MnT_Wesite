@@ -1,10 +1,11 @@
 /**
  * Shared site content for MnT Future.
  *
- * Every claim, number and quote here comes from the live mntfuture.com copy
- * (crawl of August 2026). Do not add numbers, client outcomes, prices or
- * partner tiers that are not already written here: the site's whole position
- * is that every claim on it can be shown.
+ * The positioning, tagline and the ten service areas come from the senior's
+ * homepage content (homepage-content.md, 2026-11-26). The rest comes from the
+ * live mntfuture.com copy (crawl of August 2026). Do not add numbers, client
+ * outcomes, prices or partner tiers that are not already written here: the
+ * site's whole position is that every claim on it can be shown.
  *
  * Voice: British spelling (customise, optimise, licence), short declarative
  * sentences, "you" for the reader and "we" for MnT. The method stage is
@@ -37,13 +38,35 @@ export const company = {
   ],
 };
 
-export const nav: Link[] = [
-  { label: "Ecommerce", href: "/ecommerce" },
-  { label: "AI", href: "/ai" },
-  { label: "Products", href: "/products" },
-  { label: "Work", href: "/work" },
-  { label: "About", href: "/about" },
-];
+/**
+ * The navbar: Services (a large dropdown with every area), Work (a plain link) and
+ * Company (a small dropdown). Few items, but rich panels (the user's choice).
+ */
+export const nav = {
+  services: { label: "Services", href: "/services", allLabel: "All services" },
+  work: { label: "Work", href: "/work" },
+  company: {
+    label: "Company",
+    items: [
+      { label: "About us", href: "/about", note: "Who we are, and where we work from" },
+      { label: "Ways to work with us", href: "/services#ways", note: "Start with a plan, a team or a project" },
+      { label: "Contact", href: "/contact", note: "Talk to us or book a session" },
+    ],
+  },
+  /** The card inside the Services menu. */
+  sessionCard: {
+    title: "Free strategy session",
+    text: "Bring your problem. Leave with a plan you can use.",
+  },
+};
+
+/**
+ * The senior's tagline (used in the footer; the hero heading shows it too). Their positioning
+ * line, "Enterprise AI, Custom Software & Digital Transformation Solutions", opens the hero's sub-line.
+ */
+export const positioning = {
+  tagline: "Enterprise Technology. Intelligent Transformation.",
+};
 
 export const primaryCta: Link = {
   label: "Book a free strategy session",
@@ -52,142 +75,300 @@ export const primaryCta: Link = {
 
 /** Homepage hero. */
 export const heroIntro = {
-  lead: "Commerce platforms and AI systems",
-  highlight: "your business actually runs on.",
-  sub: "Built by senior engineers, owned by you, and taken all the way to production.",
+  // The senior's tagline, split so the second half gets the gradient.
+  lead: "Enterprise technology.",
+  highlight: "Intelligent transformation.",
+  sub: "Enterprise AI, custom software and digital transformation solutions, built for your business and taken all the way to production.",
   secondaryCta: { label: "See our work", href: "/work" } satisfies Link,
 };
 
 /** "What we build" section on the homepage. */
 export const whatWeBuild = {
   /** The heading as it is shown: one line each. */
-  titleLines: ["Three things we build.", "Nothing else."],
-  menuLabels: { ecommerce: "Ecommerce", ai: "AI systems", products: "Ready apps" },
-  linkLabels: {
-    ecommerce: "Explore ecommerce platforms",
-    ai: "Explore AI services",
-    products: "Explore the three apps",
-  },
-} as const;
+  titleLines: ["Everything your business", "runs on."],
+};
 
-type Service = { name: string; summary: string; href: string };
+/** One service: its name (the senior's, word for word) and one short line saying what it is. */
+export type Service = { name: string; line: string };
 
-export type Line = {
-  id: "ecommerce" | "ai" | "products";
+export type ServiceAreaId =
+  | "ai-automation"
+  | "enterprise-software"
+  | "voice-ai"
+  | "saas-product-engineering"
+  | "web-mobile-apps"
+  | "api-integration"
+  | "data-bi"
+  | "cloud-devops"
+  | "cybersecurity"
+  | "ui-ux";
+
+/**
+ * A service area. The area and service names are the senior's content, word for word.
+ * `summary` and each service's `line` are our draft (services-content.md, 2026-11-26),
+ * built with the user's go-ahead before the senior has reviewed them.
+ */
+export type ServiceArea = {
+  /** Short id. The Services page uses it as the area's anchor (href "/services#id") and to pick its picture. */
+  id: ServiceAreaId;
   name: string;
-  headline: string;
-  /** One line under the headline. */
-  lead: string;
+  /** One sentence on what the area solves. */
+  summary: string;
+  /** A few words on what it covers (the Services menu in the navbar). */
+  short: string;
   href: string;
   services: Service[];
 };
 
-/** The three service lines. */
-export const lines: Line[] = [
-  {
-    id: "ecommerce",
-    name: "Ecommerce platforms",
-    headline: "A store you own, not one you rent.",
-    lead: "Your own platform rather than a rented one, with no percentage of every order going somewhere else.",
-    href: "/ecommerce",
-    services: [
-      {
-        name: "Platform development",
-        summary:
-          "A full platform built for how your business actually sells, with tax, payment gateways and courier integrations handled properly from the start.",
-        href: "/ecommerce/platform-development",
-      },
-      {
-        name: "D2C storefronts",
-        summary:
-          "Sell straight to your customers on a storefront you own, with your customer data, your margins and no commission on every order.",
-        href: "/ecommerce/d2c-storefront",
-      },
-      {
-        name: "Marketplace platforms",
-        summary:
-          "Many sellers on one platform: onboarding, catalogue control, commission, split payouts and settlement. The complicated parts, done properly.",
-        href: "/ecommerce/marketplace",
-      },
-      {
-        name: "B2B and wholesale",
-        summary:
-          "Customer-specific pricing, quotes and RFQ, bulk ordering, credit terms and approval flows, connected to the ERP you already run.",
-        href: "/ecommerce/b2b-wholesale",
-      },
-      {
-        name: "Integrations and automation",
-        summary:
-          "Your ERP, warehouse, courier, payment gateway and accounting, joined into one flow so nobody is retyping orders into a second system.",
-        href: "/ecommerce/integrations",
-      },
-      {
-        name: "Managed support",
-        summary:
-          "We run and maintain the platform against an SLA: monitoring, updates, security patching and a person who answers when something breaks at 9pm.",
-        href: "/ecommerce/managed-support",
-      },
-    ],
-  },
+/**
+ * A tab in "What we build": the service areas grouped into four tabs (AI, software,
+ * data, cloud). The area names and services are the senior's content
+ * (homepage-content.md, 2026-11-26), word for word. The tab labels, headlines
+ * and leads are our wording, written from that content.
+ */
+export type ServiceGroup = {
+  id: "ai" | "software" | "data" | "cloud";
+  /** Tab label on tablets and desktop. */
+  tab: string;
+  /** Shorter tab label on phones. */
+  tabShort: string;
+  /** A few words on what the tab covers (Services page hero links). */
+  short: string;
+  /** Small label above the headline. */
+  label: string;
+  headline: string;
+  /** One line under the headline. */
+  lead: string;
+  link: Link;
+  areas: ServiceArea[];
+};
+
+const aiAutomation: ServiceArea = {
+  id: "ai-automation",
+  name: "AI & Intelligent Automation",
+  summary: "AI that does real work inside your business systems, not just answers questions.",
+  short: "Agents, workflows and documents",
+  href: "/services#ai-automation",
+  services: [
+    { name: "Enterprise AI Agents", line: "Agents that act inside your systems, within clear limits, logging every step." },
+    { name: "AI Workflow Automation", line: "Repeated daily work done automatically, with a person checking where it matters." },
+    { name: "Multi-Agent Systems", line: "Several AI agents sharing one job, each handling its own part." },
+    { name: "AI Customer Support", line: "Common customer questions answered instantly, with hard cases passed to your team." },
+    { name: "AI Sales Automation", line: "Leads followed up, qualified and booked in, without manual chasing." },
+    { name: "AI Document Processing", line: "Invoices, forms and contracts read and entered, without retyping." },
+    { name: "Enterprise Knowledge Management", line: "Your documents and policies searchable, with answers that show the source." },
+  ],
+};
+
+const enterpriseSoftware: ServiceArea = {
+  id: "enterprise-software",
+  name: "Custom Enterprise Software Development",
+  summary: "Software built around how your business actually works, not the other way round.",
+  short: "ERP, CRM, HRMS and portals",
+  href: "/services#enterprise-software",
+  services: [
+    { name: "Enterprise ERP Development", line: "One system for finance, purchasing, stock and operations, built to your process." },
+    { name: "CRM Development", line: "Customers, leads and conversations in one place, shaped to how you sell." },
+    { name: "HRMS & Payroll Systems", line: "Attendance, leave, payroll and employee records in one system." },
+    { name: "Inventory & Supply Chain Management", line: "Stock, suppliers and orders tracked across every warehouse and outlet." },
+    { name: "Workflow Management Systems", line: "Approvals and handovers moved out of email into one tracked flow." },
+    { name: "Custom Business Applications", line: "Software for the work no ready-made product handles well." },
+    { name: "Enterprise Portals", line: "One secure place for staff, partners or customers to log in." },
+  ],
+};
+
+const voiceAi: ServiceArea = {
+  id: "voice-ai",
+  name: "Voice AI & Conversational AI",
+  summary: "AI that talks with your customers by phone, WhatsApp and chat.",
+  short: "Calls, WhatsApp and chat",
+  href: "/services#voice-ai",
+  services: [
+    { name: "AI Voice Calling Agents", line: "AI agents that make and answer calls in a natural voice." },
+    { name: "AI Contact Center Solutions", line: "Calls answered, routed and summarised, so your agents handle what needs them." },
+    { name: "AI Receptionist", line: "Enquiries and bookings handled by phone, at any hour." },
+    { name: "Multilingual Voice Assistants", line: "Voice assistants that speak with customers in their own language." },
+    { name: "WhatsApp AI Automation", line: "Orders, enquiries and updates handled on WhatsApp automatically." },
+    { name: "Conversational AI Chatbots", line: "Chat on your website and apps that answers from your own content." },
+    { name: "SIP & PBX Integration", line: "Voice AI connected to the phone system you already use." },
+  ],
+};
+
+const saasProduct: ServiceArea = {
+  id: "saas-product-engineering",
+  name: "Enterprise SaaS & Product Engineering",
+  summary: "Software products, from the first version to a platform many customers use.",
+  short: "SaaS platforms and MVPs",
+  href: "/services#saas-product-engineering",
+  services: [
+    { name: "Custom SaaS Development", line: "Your software product, built to be sold by subscription." },
+    { name: "Multi-Tenant SaaS Platforms", line: "One platform serving many customers, each with its data kept separate." },
+    { name: "White-Label Solutions", line: "Ready software under your brand and name, customised to you." },
+    { name: "MVP & Product Development", line: "A first version to test with real users, then the full product." },
+    { name: "Enterprise Platform Engineering", line: "Shared foundations your teams build on: accounts, permissions, billing and APIs." },
+    { name: "Legacy Software Modernization", line: "Old software rebuilt on modern technology without stopping the business." },
+  ],
+};
+
+const webMobile: ServiceArea = {
+  id: "web-mobile-apps",
+  name: "Web & Mobile Application Development",
+  summary: "Websites and apps your customers, partners and staff use every day.",
+  short: "Web, Android and iOS apps",
+  href: "/services#web-mobile-apps",
+  services: [
+    { name: "Enterprise Web Applications", line: "Browser-based software for your teams, fast and secure." },
+    { name: "Android & iOS Applications", line: "Apps for Android and iPhone, published under your company's name." },
+    { name: "Progressive Web Applications", line: "Websites that install and work like apps, even on weak connections." },
+    { name: "B2B & B2C Platforms", line: "Platforms for selling to businesses, to consumers, or to both." },
+    { name: "Customer & Partner Portals", line: "Self-service for customers and partners: orders, documents, tickets and accounts." },
+    { name: "Marketplace Development", line: "Many sellers on one platform, with onboarding, commission and payouts handled." },
+  ],
+};
+
+const apiIntegration: ServiceArea = {
+  id: "api-integration",
+  name: "API & Enterprise System Integration",
+  summary: "Your systems connected, so data flows between them without retyping.",
+  short: "APIs and connected systems",
+  href: "/services#api-integration",
+  services: [
+    { name: "API Development", line: "Clean, documented APIs that let your systems and partners connect." },
+    { name: "Third-Party API Integration", line: "Outside services connected to your software: couriers, tax, maps and messaging." },
+    { name: "ERP & CRM Integration", line: "Sales, finance and operations data kept in step across systems." },
+    { name: "Payment Gateway Integration", line: "UPI, card and wallet payments, with refunds and reconciliation." },
+    { name: "WhatsApp & Telephony Integration", line: "WhatsApp, calls and SMS connected to your CRM and support tools." },
+    { name: "Legacy System Integration", line: "Older systems connected to new ones, without a risky replacement." },
+    { name: "Enterprise Middleware Development", line: "The layer that moves and translates data between all your systems." },
+  ],
+};
+
+const dataBi: ServiceArea = {
+  id: "data-bi",
+  name: "Data Engineering & Business Intelligence",
+  summary: "Your data collected, cleaned and turned into decisions.",
+  short: "Pipelines, dashboards, forecasts",
+  href: "/services#data-bi",
+  services: [
+    { name: "Data Engineering", line: "Data from every system collected, cleaned and kept reliable." },
+    { name: "Data Pipeline Development", line: "Automated flows that move data where it is needed, on schedule." },
+    { name: "Business Intelligence Dashboards", line: "The numbers that matter, live on one screen." },
+    { name: "AI-Powered Analytics", line: "Ask questions of your data in plain language and get answers." },
+    { name: "Predictive Analytics", line: "Forecasts for sales, demand and stock based on your history." },
+    { name: "Data Warehousing", line: "All your business data in one place, ready for reporting." },
+    { name: "Reporting Automation", line: "Reports built and sent on their own, on time, every time." },
+  ],
+};
+
+const cloudDevops: ServiceArea = {
+  id: "cloud-devops",
+  name: "Cloud & DevOps Engineering",
+  summary: "Infrastructure that stays up, scales, and costs no more than it should.",
+  short: "AWS, CI/CD and cloud costs",
+  href: "/services#cloud-devops",
+  services: [
+    { name: "AWS & Cloud Solutions", line: "Your systems designed and run on AWS and other clouds." },
+    { name: "Cloud Infrastructure Architecture", line: "Cloud set-up planned for uptime, security and growth from the start." },
+    { name: "Cloud Migration", line: "Systems moved to the cloud step by step, without downtime surprises." },
+    { name: "DevOps Automation", line: "Builds, tests and server set-up automated, so releases are routine." },
+    { name: "CI/CD Implementation", line: "Every change tested and deployed automatically, safely and often." },
+    { name: "Database Optimization", line: "Slow queries and databases tuned so your software stays fast." },
+    { name: "Cloud Cost Optimization", line: "Cloud bills cut by removing waste and right-sizing what you run." },
+  ],
+};
+
+const cybersecurity: ServiceArea = {
+  id: "cybersecurity",
+  name: "Cybersecurity & IT Infrastructure",
+  summary: "Your software, data and people protected, with proof to show for it.",
+  short: "Audits, access and protection",
+  href: "/services#cybersecurity",
+  services: [
+    { name: "Application Security", line: "Security built into your software, from the code to release." },
+    { name: "API Security", line: "APIs protected with proper authentication, limits and monitoring." },
+    { name: "Cloud Security", line: "Cloud accounts, networks and data locked down and watched." },
+    { name: "Vulnerability Assessment", line: "Weak points found and ranked before someone else finds them." },
+    { name: "Identity & Access Management", line: "The right people get the right access, and nobody else." },
+    { name: "Security Audits", line: "A thorough check of your systems, with a clear list of fixes." },
+    { name: "IT Infrastructure Management", line: "Servers, networks and devices kept updated, monitored and running." },
+  ],
+};
+
+const uiUx: ServiceArea = {
+  id: "ui-ux",
+  name: "UI/UX & Digital Product Engineering",
+  summary: "Software that people find easy to use, and old software made new.",
+  short: "Design and modernisation",
+  href: "/services#ui-ux",
+  services: [
+    { name: "Enterprise UI/UX Design", line: "Screens designed around how your staff and customers actually work." },
+    { name: "SaaS Product Design", line: "Product design that helps users sign up, get started and stay." },
+    { name: "Dashboard & Interface Design", line: "Complex data and controls made clear at a glance." },
+    { name: "Product Prototyping", line: "Clickable prototypes to test ideas before anything is built." },
+    { name: "Software Re-engineering", line: "Existing software restructured to be faster and easier to change." },
+    { name: "Application Modernization", line: "Dated applications given a modern design and technology, keeping your data." },
+  ],
+};
+
+/** All the service areas, in the senior's order. */
+export const serviceAreas: ServiceArea[] = [
+  aiAutomation,
+  enterpriseSoftware,
+  voiceAi,
+  saasProduct,
+  webMobile,
+  apiIntegration,
+  dataBi,
+  cloudDevops,
+  cybersecurity,
+  uiUx,
+];
+
+/** The four "What we build" tabs. */
+export const serviceGroups: ServiceGroup[] = [
   {
     id: "ai",
-    name: "AI that reaches production",
-    headline: "Your AI pilot works in the demo. Ours goes live.",
-    lead: "Senior engineers embedded in your team who stay until the system runs in production.",
-    href: "/ai",
-    services: [
-      {
-        name: "AI consultation",
-        summary:
-          "What is genuinely worth doing with AI in your business, whether your data can support it, and what reaching production would cost. Ends in a costed path, not a maturity score.",
-        href: "/ai/consultation",
-      },
-      {
-        name: "AI automation",
-        summary:
-          "The work your team repeats every day, automated. Document handling, data entry, classification, routing, reporting. A person stays in the loop wherever the cost of being wrong is real.",
-        href: "/ai/automation",
-      },
-      {
-        name: "AI agent development",
-        summary:
-          "Agents that do work inside your systems rather than just answer questions, with clear limits on what they may act on alone and a record of everything they did.",
-        href: "/ai/agents",
-      },
-      {
-        name: "Customised AI applications",
-        summary:
-          "A complete application built for your business with AI inside it, from nothing. For when the shape of your problem means no ready product fits.",
-        href: "/ai/custom-applications",
-      },
-    ],
+    tab: "AI",
+    tabShort: "AI",
+    short: "Automation, AI agents and voice AI",
+    label: "AI and voice AI",
+    headline: "AI agents, automation and voice AI that work inside your business.",
+    lead: "From enterprise AI agents and document processing to voice agents that answer your calls in more than one language.",
+    link: { label: "Explore AI services", href: "/services#ai" },
+    areas: [aiAutomation, voiceAi],
   },
   {
-    id: "products",
-    name: "Applications ready to brand",
-    headline: "Software that already works, made yours.",
-    lead: "Three applications we host, brand and customise for you. Weeks, not a year.",
-    href: "/products",
-    services: [
-      {
-        name: "MnT AI Desk",
-        summary:
-          "Every customer message in one inbox, with AI answering the repeats. WhatsApp, Instagram, Facebook, email and website chat on one screen.",
-        href: "/products/ai-desk",
-      },
-      {
-        name: "MnT AI CRM",
-        summary:
-          "Your whole WhatsApp business on one screen: one official number for many agents, a visible sales pipeline and safe broadcasts.",
-        href: "/products/ai-crm",
-      },
-      {
-        name: "MnT Commerce India",
-        summary:
-          "Your own store, with GST done properly. Gapless invoice serials, automatic credit notes and tax decided per order.",
-        href: "/products/commerce-india",
-      },
-    ],
+    id: "software",
+    tab: "Software & apps",
+    tabShort: "Software",
+    short: "Enterprise software, SaaS, apps and design",
+    label: "Custom software",
+    headline: "Enterprise software, SaaS and apps, built around how you work.",
+    lead: "ERP, CRM and HRMS systems, SaaS platforms, web and mobile apps, and the design behind them.",
+    link: { label: "Explore software services", href: "/services#software" },
+    areas: [enterpriseSoftware, saasProduct, webMobile, uiUx],
+  },
+  {
+    id: "data",
+    tab: "Data & integration",
+    tabShort: "Data",
+    short: "APIs, integration, data and BI",
+    label: "Integration and data",
+    headline: "Your systems connected, and your data put to work.",
+    lead: "APIs that join your ERP, CRM, payments and telephony, and the pipelines and dashboards that turn the data into decisions.",
+    link: { label: "Explore data services", href: "/services#data" },
+    areas: [apiIntegration, dataBi],
+  },
+  {
+    id: "cloud",
+    tab: "Cloud & security",
+    tabShort: "Cloud",
+    short: "Cloud, DevOps and cybersecurity",
+    label: "Cloud and security",
+    headline: "Cloud, DevOps and security that keep it all running.",
+    lead: "Cloud architecture, migration and CI/CD, with application, API and cloud security checked and audited.",
+    link: { label: "Explore cloud services", href: "/services#cloud" },
+    areas: [cloudDevops, cybersecurity],
   },
 ];
 
@@ -195,9 +376,10 @@ export const lines: Line[] = [
  * Homepage "Why MnT Future": a bento grid that a switch flips between the
  * usual agency and MnT. The MnT side is the site's "Why MnT Future" reasons
  * in short form; the usual side is simply their opposite, as the original copy
- * draws it ("no juniors", "no per-seat licence, no commission", "rather than
- * billing hours", "nothing that stops working the day our contract ends").
- * The method reason is left out because "How we work" shows it.
+ * draws it ("no per-seat licence, no commission", "rather than billing hours",
+ * "nothing that stops working the day our contract ends"). The method reason is
+ * left out because "How we work" shows it. Never compare junior and senior
+ * people: the company works as one team (the user's rule).
  */
 export const whyMnt = {
   label: "Why MnT Future",
@@ -206,9 +388,9 @@ export const whyMnt = {
   options: { usual: "The usual agency", mnt: "MnT Future" },
   team: {
     label: "Who builds it",
-    usual: "Juniors learn on your project.",
-    mnt: "Senior engineers only.",
-    badge: { usual: "Mostly junior", mnt: "All senior" },
+    usual: "Handed from person to person.",
+    mnt: "One team, start to finish.",
+    badge: { usual: "Handed off", mnt: "One team" },
   },
   ownership: {
     label: "Who owns it",
@@ -296,7 +478,7 @@ export const ourWork = {
   label: "Our work",
   /** The heading as it is shown: one line each. */
   titleLines: ["Real platforms,", "shipped."],
-  body: "Judge our engineering on what we ship, not on a logo wall.",
+  body: "Judge us on what we ship, not on a logo wall.",
   cta: { label: "See all our work", href: "/work" } satisfies Link,
   yoursTitle: "Your platform could be next.",
   yoursBody: "Bring your bottleneck. Leave with a plan you can execute.",
@@ -306,13 +488,15 @@ export const ourWork = {
 export const closingCta = {
   label: "Strategy session",
   titleLines: ["Bring your bottleneck.", "Leave with a plan you can execute."],
-  body: "45 minutes with a senior consultant. You keep the written plan, whether or not you build it with us.",
+  body: "45 minutes with our team. You keep the written plan, whether or not you build it with us.",
   emailLead: "Or email us at",
 };
 
 /**
  * Homepage FAQ ("Straight answers"): six questions in a normal FAQ list.
- * Questions and answers are the site's own "we will tell you no" lines and FAQs, word for word.
+ * Questions and answers are the site's own "we will tell you no" lines and FAQs, word for word,
+ * except the first one (existing systems), written from the senior's integration services, and
+ * the first sentence of "How long does a build take?" (the old storefront timeline was removed).
  */
 export const straightAnswers = {
   label: "Frequently asked questions",
@@ -320,9 +504,9 @@ export const straightAnswers = {
   moreLead: "Have another question? Email us at",
   items: [
     {
-      question: "Should we move off Shopify?",
+      question: "Can you work with the systems we already have?",
       answer:
-        "Not always. At modest volume Shopify is genuinely the right answer and we will say so rather than sell you a build.",
+        "Yes. We connect new work to your ERP, CRM, payment gateways, WhatsApp and telephony, including older systems, rather than asking you to replace everything.",
     },
     {
       question: "We built one already and it is struggling.",
@@ -337,7 +521,7 @@ export const straightAnswers = {
     {
       question: "How long does a build take?",
       answer:
-        "A focused D2C storefront takes 8 to 16 weeks. A discovery sprint for AI work takes 1 to 2 weeks, and a first useful deployment follows 6 to 12 weeks after it. Anyone promising you production AI in two weeks is describing a demo.",
+        "It depends on the scope, and we give you a costed plan before anything starts. A discovery sprint for AI work takes 1 to 2 weeks, and a first useful deployment follows 6 to 12 weeks after it. Anyone promising you production AI in two weeks is describing a demo.",
     },
     {
       question: "Do you only work with one AI provider?",
@@ -352,13 +536,242 @@ export const straightAnswers = {
   ],
 };
 
+/**
+ * Services page (/services). The hero is our wording, written from the senior's
+ * positioning; it never states how many services there are (the user's rule).
+ */
+export const servicesPage = {
+  hero: {
+    /** The heading as it is shown: one line each on larger screens. */
+    titleLines: ["Make your business", "run smarter."],
+    body: "Enterprise AI, custom software, integration, data, cloud and security. Choose one service, or bring us the whole problem and we will plan it with you.",
+  },
+  /**
+   * "Ways to work with us": the old site's three engagement models (discovery sprint,
+   * embedded team, discovery to production) in plain words: each card starts with the
+   * customer's own question. No "engineer" or "senior". No durations, prices or payment terms:
+   * the senior has not confirmed them, so the site does not promise them (the user's rule).
+   */
+  ways: {
+    label: "Ways to work with us",
+    titleLines: ["Three ways", "to work with us."],
+    body: "Pick the one that fits where you are today.",
+    options: [
+      {
+        id: "sprint",
+        question: "Not sure yet?",
+        title: "Start with a plan",
+        text: "We study your problem and your data, then give you a written plan. You decide what happens next.",
+        goodFor: "New ideas, unclear needs",
+        youGet: "A written plan",
+      },
+      {
+        id: "team",
+        question: "Lots to build?",
+        title: "Get a team",
+        badge: "Our core offering",
+        text: "Our people join your team and work with you, for as long as you need them. They build, launch and stay.",
+        goodFor: "Ongoing work, many projects",
+        youGet: "People inside your team",
+      },
+      {
+        id: "project",
+        question: "One clear project?",
+        title: "Build one project",
+        text: "You know what you want built. We agree the scope up front, then build it stage by stage.",
+        goodFor: "One clear goal",
+        youGet: "One finished system",
+      },
+    ],
+    help: { lead: "Not sure which fits?", link: { label: "Ask us in a free strategy session", href: "/strategy-session" } },
+  },
+};
+
+/**
+ * Work page (/work): what we have built for real clients.
+ */
+export const workPage = {
+  hero: {
+    /** The heading as it is shown: one line each on larger screens. */
+    titleLines: ["Real platforms,", "still running."],
+    body: "Websites, apps and platforms we built for businesses in India and abroad. Every one of them is live: open it and see it working.",
+    /**
+     * The row along the bottom: the kinds of work in the projects below (true for every
+     * confirmed project). It replaced the old site's counts (19 / 13 / 3), which were not reliable.
+     */
+    builtLabel: "What we built for them",
+    built: [
+      { id: "stores", label: "Online stores" },
+      { id: "software", label: "Business software" },
+      { id: "websites", label: "Websites" },
+      { id: "ai", label: "AI features" },
+      { id: "payments", label: "Payments & shipping" },
+    ],
+  },
+  /**
+   * The projects, as one bento grid: iSuite AI first and larger, the rest as smaller cards
+   * (screenshot, name, industry). The user wants little text on this page. Only projects
+   * the user has confirmed MnT built go here (Leats, on the old site's list, was not built
+   * by MnT); more are added once the team confirms the old list and screenshots are taken.
+   */
+  projects: {
+    label: "Case studies",
+    titleLines: ["Selected work."],
+    /** The last tile of the grid on desktop, filling the space after the projects. */
+    next: {
+      title: "Your project could be next.",
+      text: "Tell us what you need, and we will plan it with you in a free 45-minute session.",
+    },
+    items: [
+      {
+        client: "iSuite AI",
+        url: "https://isuite.ai/",
+        domain: "isuite.ai",
+        image: "/work/isuite-ai.png",
+        label: "Business software · AI",
+        line: "Industry-specific business software with built-in AI.",
+      },
+      {
+        client: "Lia Fashion",
+        url: "https://www.liafashion.in/",
+        domain: "liafashion.in",
+        image: "/work/lia-fashion.png",
+        label: "Fashion · Online and in store",
+      },
+      {
+        client: "Sai Nandhini Tasty World",
+        url: "https://sntasty.com/",
+        domain: "sntasty.com",
+        image: "/work/sai-nandhini.png",
+        label: "Food · Shipped across India",
+      },
+      {
+        client: "Choco Rush",
+        url: "https://www.chocorush.in/",
+        domain: "chocorush.in",
+        image: "/work/choco-rush.png",
+        label: "Bakery · Orders on WhatsApp",
+      },
+      {
+        client: "Shiv Foto",
+        url: "https://shivfoto.in/",
+        domain: "shivfoto.in",
+        image: "/work/shiv-foto.png",
+        label: "Photography · Madurai",
+      },
+    ],
+  },
+};
+
+/**
+ * About page. DRAFT text until the user sends the reference for this page (do not take it from
+ * the old site). Never call the team "small", "senior" or an "engineering team", and never state
+ * a number of services (the user's rules).
+ */
+export const aboutPage = {
+  hero: {
+    /** The heading as it is shown: one line each on larger screens. */
+    titleLines: ["We build it.", "We stay until it runs."],
+    body: "We build enterprise AI, custom software and digital transformation solutions from Madurai. We work inside your team and your environment.",
+    facts: [
+      { value: "Madurai", label: "Where we are based" },
+      { value: "End to end", label: "From the first plan to the live system" },
+      { value: "Inside your team", label: "We work in your environment" },
+      { value: "5 stages", label: "Discover to Optimize, every engagement" },
+    ],
+  },
+  /**
+   * "Who we are": a big statement on the left, a company profile card on the right.
+   * DRAFT text, made only from lines already on the new site: the user will send the real
+   * reference. Do not take About text from the old site (the user's rule).
+   */
+  story: {
+    label: "Who we are",
+    /** The statement, in pieces: `accent` pieces are shown in the blue gradient. */
+    statement: [
+      { text: "We plan, build and launch " },
+      { text: "software and AI", accent: true },
+      { text: " for businesses, and we " },
+      { text: "stay with it", accent: true },
+      { text: " after it goes live." },
+    ],
+    body: "MnT Future is a technology company in Madurai, India. We build AI systems, custom software, websites and mobile apps, and connect them to the systems you already use.",
+    card: {
+      label: "Company profile",
+      rows: [
+        { label: "What we build", value: "AI systems, custom software, websites and mobile apps" },
+        { label: "Based in", value: "Madurai, India" },
+        { label: "How we work", value: "Closely with your team, in your own systems" },
+        { label: "Who builds it", value: "One team, from the first plan to launch" },
+        { label: "Our steps", value: "Discover, Design, Build, Deploy, Optimize" },
+      ],
+    },
+  },
+  /**
+   * "What we believe": four big cards that stack on top of each other as you scroll, each with
+   * a small drawn picture (`picture`). DRAFT text from lines already on the new site.
+   */
+  beliefs: {
+    label: "What we believe",
+    titleLines: ["What you can", "expect from us."],
+    body: "Four simple promises we make to every client.",
+    items: [
+      {
+        picture: "live" as const,
+        line: "We stay until it is live.",
+        text: "Not just a demo. We stay until your system is working with your real data and real users.",
+      },
+      {
+        picture: "own" as const,
+        line: "You own everything we build.",
+        text: "The code, the data and the servers are yours. Nothing stops working if you stop working with us.",
+      },
+      {
+        picture: "honest" as const,
+        line: "We give you honest advice.",
+        text: "If something is not worth building, we will tell you before you spend money on it.",
+      },
+      {
+        picture: "inside" as const,
+        line: "We work as part of your team.",
+        text: "We work closely with your people, in your own systems, not from a distance.",
+      },
+    ],
+  },
+  /**
+   * "Our team": four even cards in one row, one per person, text only (no photos, the user's choice), each
+   * with a link to the person's LinkedIn profile. PLACEHOLDERS until the user sends the real
+   * names, roles, lines and LinkedIn links. A card with an empty `linkedin` shows the button
+   * without a link.
+   */
+  team: {
+    label: "Our team",
+    titleLines: ["The people", "behind the work."],
+    body: "One team plans it, builds it and stays with it after it goes live.",
+    people: [
+      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
+      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
+      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
+      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
+    ],
+  },
+};
+
+/** Footer links to the service areas of the given tabs. */
+function areaLinks(ids: ServiceGroup["id"][]): Link[] {
+  return serviceGroups
+    .filter((group) => ids.includes(group.id))
+    .flatMap((group) => group.areas)
+    .map(({ name, href }) => ({ label: name, href }));
+}
+
 export const footer = {
-  tagline:
-    "We build the commerce platforms and AI systems businesses actually run on.",
+  tagline: positioning.tagline,
+  // The service areas in three columns (AI, software, data and cloud), then the company links.
   columns: [
-    { title: "Ecommerce", links: lines[0].services.map(({ name, href }) => ({ label: name, href })) },
-    { title: "AI", links: lines[1].services.map(({ name, href }) => ({ label: name, href })) },
-    { title: "Products", links: lines[2].services.map(({ name, href }) => ({ label: name, href })) },
+    { title: "AI", links: areaLinks(["ai"]) },
+    { title: "Software", links: areaLinks(["software"]) },
+    { title: "Data and cloud", links: areaLinks(["data", "cloud"]) },
     {
       title: "Company",
       links: [

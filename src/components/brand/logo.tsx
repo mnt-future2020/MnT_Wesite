@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
  * The MnT Future logo (public/brand).
  *   logo.png          blue "MnT" + grey "Future": for light backgrounds
  *   logo-on-dark.png  same, with "Future" in white: for dark backgrounds
- * The logo keeps its own colours whichever palette is chosen.
+ * The site's colour palette is built from these logo colours (see globals.css).
  * The favicon is the "M" on its own (src/app/icon.png).
  */
 

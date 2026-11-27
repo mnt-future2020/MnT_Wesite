@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Google_Sans } from "next/font/google";
-import { paletteScript } from "@/components/site/palettes";
 import "./globals.css";
 
 /**
@@ -21,21 +20,16 @@ const googleSans = Google_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://mntfuture.com"),
   title: {
-    default: "MnT Future: commerce platforms and AI systems you own",
+    default: "MnT Future: Enterprise AI, custom software and digital transformation",
     template: "%s | MnT Future",
   },
   description:
-    "MnT Future builds commerce platforms you own, AI agents and automation that reach production, and ready applications we brand and customise. Senior engineers only.",
+    "MnT Future builds enterprise AI, custom software, voice AI, SaaS, web and mobile apps, integrations, data, cloud and security solutions. Enterprise Technology. Intelligent Transformation.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // suppressHydrationWarning: the palette script below may set colour variables on <html>
-    // before React loads (TEMPORARY, with the palette switch).
-    <html lang="en" className={`${googleSans.variable} h-full antialiased`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: paletteScript }} />
-      </head>
+    <html lang="en" className={`${googleSans.variable} h-full antialiased`}>
       {/* The page background (set in globals.css) is the same light colour as the light sections,
           so the gaps between section cards blend into them. */}
       <body className="min-h-full flex flex-col">{children}</body>
