@@ -24,8 +24,11 @@ import {
  * running off the panel's edge. Light on text, heavy on picture.
  *
  * Grouped like the homepage tabs; each group has an id (#ai, #software, ...)
- * for the hero's quick links. On desktop, each group's heading block (label,
- * name and line) stays fixed at the top while you scroll through its areas.
+ * for the hero's quick links. Each group's heading (label, name and line) sits
+ * in a soft blue rounded card, so it reads clearly as the parent of the areas
+ * below it (whose titles are a size smaller). On every screen that card stays
+ * fixed at the top while you scroll through the group's areas, with its label,
+ * name and line (smaller on phones, so the card stays compact).
  */
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -47,7 +50,9 @@ const areaVisuals: Record<ServiceAreaId, React.ComponentType> = {
 export function ServicesStory() {
   return (
     <section aria-label="All services" data-header-theme="light" className="bg-background text-foreground">
-      <div className="mx-auto max-w-7xl px-5 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-28 lg:pt-4">
+      {/* Top padding: on phones and tablets it leaves room for the first card's solid strip (see Group);
+          on desktop each group's fixed heading strip brings its own room. */}
+      <div className="mx-auto max-w-7xl px-5 pt-20 pb-20 sm:px-8 sm:pt-[5.25rem] sm:pb-28 lg:pt-4">
         {serviceGroups.map((group, index) => (
           <Group key={group.id} group={group} first={index === 0} />
         ))}
@@ -58,24 +63,39 @@ export function ServicesStory() {
 
 function Group({ group, first }: { group: ServiceGroup; first: boolean }) {
   return (
-    // Phones and tablets: scroll-mt keeps the group's heading clear of the floating header when a
-    // quick link jumps here. Desktop: the heading block makes that room itself (see below).
-    <div id={group.id} className={cn("scroll-mt-28 lg:scroll-mt-0", !first && "mt-28 sm:mt-36 lg:mt-24")}>
+    // A quick link jumps to the group's top. Phones and tablets: scroll-mt keeps its card clear of the floating
+    // header. Desktop: the fixed heading strip makes that room itself.
+    <div
+      id={group.id}
+      className={cn("scroll-mt-[4.5rem] sm:scroll-mt-[4.75rem] lg:scroll-mt-0", !first && "mt-28 sm:mt-36 lg:mt-24")}
+    >
       {/*
-        The group: its label and name, and one line about it.
-        Desktop: this block stays fixed at the top of the screen while you scroll through the
-        group's areas, and the next group's block takes its place. It starts at the very top of
-        the screen (with room for the floating site header) and has the page colour, so the
-        areas scroll under it; a soft fade along its bottom edge blends them in.
+        The group's heading card: its label, name and one line about it, on a soft blue card.
+        It stays fixed at the top of the screen while you scroll through the group's areas, and
+        the next group's card takes its place.
+        Phones and tablets: it sticks just under the floating site header, and a solid strip in the
+        page colour (before:) fills the space above it up to the top of the screen, so what you
+        have scrolled past disappears there, as on desktop. Desktop: it sticks at the very top
+        inside a strip with room for the header.
+        The strip has the page colour, so the areas scroll under it; a soft fade along its bottom
+        edge blends them in.
       */}
-      <div className="grid gap-5 lg:sticky lg:top-0 lg:z-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-end lg:gap-16 lg:bg-background lg:pt-24 lg:pb-6 lg:after:pointer-events-none lg:after:absolute lg:after:inset-x-0 lg:after:top-full lg:after:h-8 lg:after:bg-linear-to-b lg:after:from-background lg:after:to-transparent">
-        <div>
-          <p className="text-sm font-medium text-brand">{group.label}</p>
-          <h2 className="mt-3 font-heading text-[clamp(2.5rem,4.6vw,4.5rem)] leading-none font-medium tracking-[-0.04em]">
-            {group.tab}
-          </h2>
+      <div className="sticky top-[4.5rem] z-20 bg-background pb-3 before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-[4.5rem] before:bg-background sm:before:h-[4.75rem] lg:before:hidden after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-6 after:bg-linear-to-b after:from-background after:to-transparent sm:top-[4.75rem] lg:top-0 lg:pt-24 lg:pb-5 lg:after:h-8">
+        <div className="relative grid gap-2.5 overflow-hidden rounded-[1.5rem] bg-linear-150 from-tint-1 via-p1-soft/55 to-p1/35 px-5 py-4 shadow-[0_18px_44px_-30px_rgb(11_16_36/0.4)] sm:rounded-[1.75rem] sm:px-7 sm:py-5 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-end lg:gap-16 lg:px-10 lg:py-8">
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-24 -right-16 size-72 rounded-full bg-white/40 blur-3xl"
+          />
+          <div className="relative">
+            <p className="text-xs font-medium text-brand sm:text-sm">{group.label}</p>
+            <h2 className="mt-1.5 font-heading text-[clamp(1.625rem,3.8vw,3.75rem)] leading-none font-medium tracking-[-0.04em] lg:mt-2">
+              {group.tab}
+            </h2>
+          </div>
+          <p className="relative max-w-2xl text-sm leading-snug text-foreground/80 sm:text-base lg:text-xl lg:leading-[1.4]">
+            {group.lead}
+          </p>
         </div>
-        <p className="max-w-2xl text-lg leading-[1.4] text-foreground sm:text-xl">{group.lead}</p>
       </div>
 
       {/* Its areas: one row each. Desktop: the panels sit close together, one under the other. */}
@@ -92,14 +112,14 @@ function AreaRow({ area }: { area: ServiceArea }) {
   const Icon = areaIcons[area.id];
   return (
     // The id is the anchor for links like /services#voice-ai (homepage "Learn more", footer).
-    // scroll-mt leaves room for the floating header; on desktop also for the fixed group heading.
+    // scroll-mt leaves room for the floating header; on desktop also for the fixed group heading card.
     <article
       id={area.id}
-      className="grid scroll-mt-28 items-center gap-8 lg:scroll-mt-64 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16"
+      className="grid scroll-mt-[15rem] items-center gap-8 sm:scroll-mt-[16rem] lg:scroll-mt-[19rem] lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16"
     >
       <div className="lg:py-10">
         <Icon className="size-10 text-brand" strokeWidth={1.75} aria-hidden="true" />
-        <h3 className="mt-6 font-heading text-[clamp(2rem,3.4vw,3rem)] leading-[1.05] font-medium tracking-[-0.035em] text-balance">
+        <h3 className="mt-6 font-heading text-[clamp(1.75rem,2.6vw,2.5rem)] leading-[1.08] font-medium tracking-[-0.03em] text-balance">
           {area.name}
         </h3>
         <p className="mt-5 max-w-md text-lg leading-[1.4] text-foreground sm:text-xl">{area.summary}</p>

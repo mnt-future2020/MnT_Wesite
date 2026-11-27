@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Google_Sans } from "next/font/google";
+import { siteUrl } from "@/content/site";
 import "./globals.css";
 
 /**
@@ -18,13 +19,13 @@ const googleSans = Google_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mntfuture.com"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "MnT Future: Enterprise AI, custom software and digital transformation",
+    default: "MnT Future: Enterprise AI, Custom Software & Digital Transformation",
     template: "%s | MnT Future",
   },
   description:
-    "MnT Future builds enterprise AI, custom software, voice AI, SaaS, web and mobile apps, integrations, data, cloud and security solutions. Enterprise Technology. Intelligent Transformation.",
+    "Enterprise AI, custom software, web and mobile apps, data, cloud and security for growing businesses. Based in Madurai, India.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

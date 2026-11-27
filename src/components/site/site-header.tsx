@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AskMntButton } from "@/components/ask-mnt/ask-mnt-button"; // Ask MnT (demo): remove this line and <AskMntButton /> below to take it out
 import { Logo } from "@/components/brand/logo";
 import { primaryCta } from "@/content/site";
 import { HeaderTheme } from "./header-theme";
@@ -25,6 +26,7 @@ export function SiteHeader() {
         <MainNav />
 
         <div className="flex items-center gap-1">
+          <AskMntButton />
           <Link
             href={primaryCta.href}
             className="hidden h-10 items-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:inline-flex"

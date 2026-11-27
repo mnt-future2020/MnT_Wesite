@@ -5,9 +5,10 @@ import { OurTeam } from "@/components/about/our-team";
 import { WhoWeAre } from "@/components/about/who-we-are";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About Us: Technology Company in Madurai",
+  alternates: { canonical: "/about" },
   description:
-    "MnT Future builds enterprise AI, custom software and digital transformation solutions from Madurai, and stays with every system until it runs in production.",
+    "MnT Future is a technology company in Madurai, India. We plan, build and launch software and AI for businesses, and stay with it after it goes live.",
 };
 
 // About page: hero, who we are, what we believe, our team. No closing banner (the user removed it).

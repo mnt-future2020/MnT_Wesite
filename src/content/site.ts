@@ -14,6 +14,9 @@
 
 export type Link = { label: string; href: string };
 
+/** The live site's address (Google, share pictures and the sitemap use it). */
+export const siteUrl = "https://mntfuture.com";
+
 export const company = {
   name: "MnT Future",
   legalName: "Magizh NexGen Technologies",
@@ -39,24 +42,24 @@ export const company = {
 };
 
 /**
- * The navbar: Services (a large dropdown with every area), Work (a plain link) and
- * Company (a small dropdown). Few items, but rich panels (the user's choice).
+ * The navbar: Services (a large dropdown with every area), Work and Insights (plain links)
+ * and Company (a small dropdown). Few items, but rich panels (the user's choice).
  */
 export const nav = {
   services: { label: "Services", href: "/services", allLabel: "All services" },
   work: { label: "Work", href: "/work" },
+  insights: { label: "Insights", href: "/insights" },
   company: {
     label: "Company",
     items: [
       { label: "About us", href: "/about", note: "Who we are, and where we work from" },
-      { label: "Ways to work with us", href: "/services#ways", note: "Start with a plan, a team or a project" },
       { label: "Contact", href: "/contact", note: "Talk to us or book a session" },
     ],
   },
   /** The card inside the Services menu. */
   sessionCard: {
     title: "Free strategy session",
-    text: "Bring your problem. Leave with a plan you can use.",
+    text: "Plan your next project with our team. You keep the written plan.",
   },
 };
 
@@ -70,7 +73,7 @@ export const positioning = {
 
 export const primaryCta: Link = {
   label: "Book a free strategy session",
-  href: "/strategy-session",
+  href: "/contact?topic=session",
 };
 
 /** Homepage hero. */
@@ -481,14 +484,14 @@ export const ourWork = {
   body: "Judge us on what we ship, not on a logo wall.",
   cta: { label: "See all our work", href: "/work" } satisfies Link,
   yoursTitle: "Your platform could be next.",
-  yoursBody: "Bring your bottleneck. Leave with a plan you can execute.",
+  yoursBody: "Let's plan your next project together.",
 } as const;
 
 /** Homepage closing banner (the strategy session in short). */
 export const closingCta = {
   label: "Strategy session",
-  titleLines: ["Bring your bottleneck.", "Leave with a plan you can execute."],
-  body: "45 minutes with our team. You keep the written plan, whether or not you build it with us.",
+  titleLines: ["Let's plan your next", "project together."],
+  body: "Meet our team for free and get a clear written plan.",
   emailLead: "Or email us at",
 };
 
@@ -583,7 +586,7 @@ export const servicesPage = {
         youGet: "One finished system",
       },
     ],
-    help: { lead: "Not sure which fits?", link: { label: "Ask us in a free strategy session", href: "/strategy-session" } },
+    help: { lead: "Not sure which fits?", link: { label: "Ask us in a free strategy session", href: "/contact?topic=session" } },
   },
 };
 
@@ -620,7 +623,7 @@ export const workPage = {
     /** The last tile of the grid on desktop, filling the space after the projects. */
     next: {
       title: "Your project could be next.",
-      text: "Tell us what you need, and we will plan it with you in a free 45-minute session.",
+      text: "Tell us what you need, and we will plan it with you in a free strategy session.",
     },
     items: [
       {
@@ -757,6 +760,69 @@ export const aboutPage = {
   },
 };
 
+/**
+ * Contact page: how to reach us on the left, the form on the right.
+ * The phone number and office address are PLACEHOLDERS until the user sends the real ones.
+ * The form is not connected yet (the company will decide where messages go): sending shows a
+ * note pointing to the email address instead. "Book a free strategy session" buttons open this
+ * page as /contact?topic=session, which ticks that topic in the form.
+ */
+export const contactPage = {
+  hero: {
+    titleLines: ["Let's talk about", "your project."],
+    body: "Tell us what you need, and our team will get back to you. Or book a free strategy session.",
+  },
+  details: [
+    { id: "email", label: "Email", value: company.email, href: `mailto:${company.email}` },
+    /** PLACEHOLDER: the real number comes from the user. No link until then. */
+    { id: "phone", label: "Phone", value: "+91 00000 00000", href: "" },
+    /** PLACEHOLDER: the real address comes from the user. */
+    { id: "office", label: "Office", value: "Office address, Madurai, Tamil Nadu", href: "" },
+    { id: "linkedin", label: "LinkedIn", value: "MnT Future", href: "https://www.linkedin.com/company/mntfuture" },
+  ],
+  form: {
+    title: "Send us a message",
+    fields: {
+      name: { label: "Your name", placeholder: "Full name" },
+      company: { label: "Company", placeholder: "Company name" },
+      email: { label: "Email", placeholder: "you@company.com" },
+      phone: { label: "Phone", placeholder: "Phone number" },
+      message: { label: "Message", placeholder: "Tell us a little about what you want to build or fix." },
+    },
+    topicsLabel: "What can we help with?",
+    /** Tap to pick one or more. "session" is ticked when the page is opened from a Book button. */
+    topics: [
+      { id: "session", label: "Free strategy session" },
+      ...serviceGroups.map((group) => ({ id: group.id as string, label: group.tab })),
+      { id: "other", label: "Something else" },
+    ],
+    optional: "Optional",
+    submit: "Send message",
+    privacyNote: "We use your details only to reply to you. See our",
+    /** Shown after Send until the form is connected. */
+    notConnected: "Thank you. Online sending is not switched on yet, so please email us your message at",
+  },
+};
+
+/** The "page not found" (404) page. */
+export const notFoundPage = {
+  label: "Page not found",
+  title: "This page does not exist.",
+  body: "The link may be old, or the page may have moved. Everything else is still here.",
+  home: "Back to home",
+  linksLead: "Or go straight to",
+  links: [
+    { label: "Services", href: "/services" },
+    { label: "Work", href: "/work" },
+    { label: "Insights", href: "/insights" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
+  ] satisfies Link[],
+};
+
+/** The Privacy policy link: footer Company column (under Contact) and under the Contact form. */
+export const privacyLink: Link = { label: "Privacy policy", href: "/privacy" };
+
 /** Footer links to the service areas of the given tabs. */
 function areaLinks(ids: ServiceGroup["id"][]): Link[] {
   return serviceGroups
@@ -776,9 +842,10 @@ export const footer = {
       title: "Company",
       links: [
         { label: "Work", href: "/work" },
+        { label: "Insights", href: "/insights" },
         { label: "About", href: "/about" },
-        { label: "Strategy session", href: "/strategy-session" },
         { label: "Contact", href: "/contact" },
+        privacyLink,
       ],
     },
   ] satisfies { title: string; links: Link[] }[],

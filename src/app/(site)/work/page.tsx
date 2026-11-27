@@ -4,9 +4,10 @@ import { CaseStudies } from "@/components/work/case-studies";
 import { WorkHero } from "@/components/work/work-hero";
 
 export const metadata: Metadata = {
-  title: "Work",
+  title: "Our Work: Websites, Stores & Business Software",
   description:
-    "Live websites, apps and platforms MnT Future built for businesses in India, Australia and Malaysia. Open them and see them working.",
+    "Live websites, online stores and business software MnT Future has built. Open them and see them working.",
+  alternates: { canonical: "/work" },
 };
 
 // Work page: the hero, the projects, and the dark "Book a session" banner.

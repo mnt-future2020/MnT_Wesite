@@ -14,7 +14,7 @@ import { nav, primaryCta, serviceGroups } from "@/content/site";
 /*
  * Phones and tablets: the menu slides in from the right. Same structure as the
  * desktop navbar: Services (the four groups, each jumping to its part of the
- * Services page), Work, and Company (About us, Ways to work with us, Contact),
+ * Services page), Work, Insights, and Company (About us, Contact),
  * with the booking button at the bottom.
  */
 
@@ -73,15 +73,18 @@ export function MobileNav() {
             </li>
           </ul>
 
-          {/* Work. */}
-          <div className="mt-4 border-t border-border pt-4">
-            <SheetClose
-              nativeButton={false}
-              render={<Link href={nav.work.href} />}
-              className="flex rounded-xl px-3 py-2.5 font-heading text-lg font-medium transition-colors hover:bg-muted"
-            >
-              {nav.work.label}
-            </SheetClose>
+          {/* Work and Insights. */}
+          <div className="mt-4 grid gap-0.5 border-t border-border pt-4">
+            {[nav.work, nav.insights].map((item) => (
+              <SheetClose
+                key={item.href}
+                nativeButton={false}
+                render={<Link href={item.href} />}
+                className="flex rounded-xl px-3 py-2.5 font-heading text-lg font-medium transition-colors hover:bg-muted"
+              >
+                {item.label}
+              </SheetClose>
+            ))}
           </div>
 
           {/* Company. */}

@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils";
 import { areaIcons } from "./service-icons";
 
 /*
- * The desktop navbar: Services ▾ · Work · Company ▾.
+ * The desktop navbar: Services ▾ · Work · Insights · Company ▾.
  * Services opens a wide panel with every service area, grouped like the Services
  * page (AI and Data & integration, Software & apps, Cloud & security), each with
  * its icon and a few words, plus a card for the free strategy session.
- * Company opens a small panel (About us, Ways to work with us, Contact).
+ * Company opens a small panel (About us, Contact).
  * Opens on hover or click, works with the keyboard; the panel slides and resizes
  * smoothly between the two menus.
  */
@@ -42,6 +42,12 @@ export function MainNav() {
         <NavigationMenu.Item>
           <NavigationMenu.Link render={<Link href={nav.work.href} />} className={topItem}>
             {nav.work.label}
+          </NavigationMenu.Link>
+        </NavigationMenu.Item>
+
+        <NavigationMenu.Item>
+          <NavigationMenu.Link render={<Link href={nav.insights.href} />} className={topItem}>
+            {nav.insights.label}
           </NavigationMenu.Link>
         </NavigationMenu.Item>
 
