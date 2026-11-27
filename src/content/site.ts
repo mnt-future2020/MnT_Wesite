@@ -22,6 +22,24 @@ export const company = {
   legalName: "Magizh NexGen Technologies",
   email: "info@mntfuture.com",
   base: "Madurai, India",
+  /**
+   * The office, as on the company's JustDial listing (the user asked to use it, 2026-11-27).
+   * The door number and PIN code are still to be confirmed by the company; add them here and
+   * they appear on the Contact page and in Google's company details.
+   */
+  address: {
+    street: "Uchaparamedu Main Road, Iyer Bungalow",
+    city: "Madurai",
+    region: "Tamil Nadu",
+    country: "India",
+  },
+  /**
+   * The company's WhatsApp number, digits only with the country code (for example "919876543210").
+   * Given by the user on 2026-11-27. If it is ever emptied, the Contact page's WhatsApp line says
+   * "Number coming soon" and has no link.
+   * No phone number is shown on the site (the user: a service company does not need one).
+   */
+  whatsapp: "918220947112",
   socials: [
     { label: "LinkedIn", href: "https://www.linkedin.com/company/mntfuture" },
     { label: "Instagram", href: "https://www.instagram.com/mnt_future" },
@@ -742,27 +760,40 @@ export const aboutPage = {
     ],
   },
   /**
-   * "Our team": four even cards in one row, one per person, text only (no photos, the user's choice), each
-   * with a link to the person's LinkedIn profile. PLACEHOLDERS until the user sends the real
-   * names, roles, lines and LinkedIn links. A card with an empty `linkedin` shows the button
-   * without a link.
+   * "Our team": four even cards in one row, one per person, text only (no photos, the user's choice).
+   * Names and roles from the company notes (the mnt-ceo skill's india-website.md), added at the
+   * user's request on 2026-11-27. The one-line descriptions only describe each role (no invented
+   * details): the senior should confirm them. LinkedIn: add each person's profile link to
+   * `linkedin`. Until then the LinkedIn button shows but does not link anywhere (fill before launch).
    */
   team: {
     label: "Our team",
     titleLines: ["The people", "behind the work."],
     body: "One team plans it, builds it and stays with it after it goes live.",
     people: [
-      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
-      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
-      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
-      { name: "Full name", role: "Role", line: "One short line about this person.", linkedin: "" },
+      {
+        name: "Udhayaseelan Renganathan",
+        role: "Founder & CEO",
+        line: "Founded MnT Future and leads the company.",
+        linkedin: "",
+      },
+      { name: "Rahavi", role: "Managing Director", line: "Manages the company's day-to-day running.", linkedin: "" },
+      { name: "Kansha M", role: "CTO", line: "Leads technology across our projects.", linkedin: "" },
+      {
+        name: "Syed Asrar Ahmed",
+        role: "Chief Tech Consultant",
+        line: "Guides the technical direction of our work.",
+        linkedin: "",
+      },
     ],
   },
 };
 
 /**
  * Contact page: how to reach us on the left, the form on the right.
- * The phone number and office address are PLACEHOLDERS until the user sends the real ones.
+ * No phone number (the user: a service company does not need one); WhatsApp instead, shown once
+ * company.whatsapp is filled in. The office address is the one from the company's JustDial listing
+ * (door number and PIN code still to be confirmed).
  * The form is not connected yet (the company will decide where messages go): sending shows a
  * note pointing to the email address instead. "Book a free strategy session" buttons open this
  * page as /contact?topic=session, which ticks that topic in the form.
@@ -774,10 +805,29 @@ export const contactPage = {
   },
   details: [
     { id: "email", label: "Email", value: company.email, href: `mailto:${company.email}` },
-    /** PLACEHOLDER: the real number comes from the user. No link until then. */
-    { id: "phone", label: "Phone", value: "+91 00000 00000", href: "" },
-    /** PLACEHOLDER: the real address comes from the user. */
-    { id: "office", label: "Office", value: "Office address, Madurai, Tamil Nadu", href: "" },
+    /**
+     * WhatsApp: shows the number (+91 82209 47112) and opens a WhatsApp chat with a short message
+     * already typed. While company.whatsapp is empty it shows "Number coming soon" with no link.
+     */
+    {
+      id: "whatsapp",
+      label: "WhatsApp",
+      value: company.whatsapp
+        ? `+${company.whatsapp.slice(0, 2)} ${company.whatsapp.slice(2, 7)} ${company.whatsapp.slice(7)}`
+        : "Number coming soon",
+      href: company.whatsapp
+        ? `https://wa.me/${company.whatsapp}?text=${encodeURIComponent("Hi MnT Future, I would like to talk about a project.")}`
+        : "",
+    },
+    /** The office address (see company.address); it opens Google Maps. */
+    {
+      id: "office",
+      label: "Office",
+      value: `${company.address.street}, ${company.address.city}, ${company.address.region}`,
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        `${company.legalName}, ${company.address.street}, ${company.address.city}`
+      )}`,
+    },
     { id: "linkedin", label: "LinkedIn", value: "MnT Future", href: "https://www.linkedin.com/company/mntfuture" },
   ],
   form: {
@@ -786,7 +836,7 @@ export const contactPage = {
       name: { label: "Your name", placeholder: "Full name" },
       company: { label: "Company", placeholder: "Company name" },
       email: { label: "Email", placeholder: "you@company.com" },
-      phone: { label: "Phone", placeholder: "Phone number" },
+      phone: { label: "Phone or WhatsApp", placeholder: "Your number" },
       message: { label: "Message", placeholder: "Tell us a little about what you want to build or fix." },
     },
     topicsLabel: "What can we help with?",

@@ -1,14 +1,15 @@
 import { Suspense, type CSSProperties } from "react";
-import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import { MailIcon, MapPinIcon } from "lucide-react";
 import { laptopGlowA, laptopGlowB } from "@/components/site/hero-glow";
 import { LinkedInMark } from "@/components/site/linkedin-mark";
+import { WhatsAppMark } from "@/components/site/whatsapp-mark";
 import { contactPage } from "@/content/site";
 import { ContactForm, ContactFormFromAddress } from "./contact-form";
 
 /*
  * The whole Contact page, in one screen: light, with the same soft corner glows
  * and dots as the other page heroes. Left: the heading, one line, and how to
- * reach us (email, phone, office, LinkedIn). Right: the form card.
+ * reach us (email, WhatsApp once its number is set, office, LinkedIn). Right: the form card.
  * Phones and tablets: the form goes under the details.
  */
 
@@ -16,7 +17,7 @@ const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as CSSProperties;
 
 const icons = {
   email: <MailIcon className="size-[1.125rem]" aria-hidden="true" />,
-  phone: <PhoneIcon className="size-[1.125rem]" aria-hidden="true" />,
+  whatsapp: <WhatsAppMark className="size-[1.125rem]" />,
   office: <MapPinIcon className="size-[1.125rem]" aria-hidden="true" />,
   linkedin: <LinkedInMark className="size-4" />,
 };

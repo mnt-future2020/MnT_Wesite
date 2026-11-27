@@ -100,7 +100,7 @@ function LinkedInButton({ person, blue }: { person: Person; blue: boolean }) {
       />
     </>
   );
-  // Placeholder cards have no link yet: show the button without one.
+  // No LinkedIn link yet: the button shows, but does not link anywhere. Add the links before launch.
   if (!person.linkedin) {
     return <span className={cn(buttonClass, !blue && "text-muted-foreground")}>{content}</span>;
   }

@@ -3,8 +3,8 @@ import { company, siteUrl } from "@/content/site";
 
 /*
  * Hidden details for Google (schema.org "structured data"), so it can show the
- * company and the articles properly in search. Only confirmed details: no phone
- * or street address until the company sends them.
+ * company and the articles properly in search. Only details the user gave: no
+ * phone number until the company sends it.
  */
 
 /** Puts the details in the page as a JSON-LD script. */
@@ -33,8 +33,9 @@ export const organizationData = {
   email: company.email,
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Madurai",
-    addressRegion: "Tamil Nadu",
+    streetAddress: company.address.street,
+    addressLocality: company.address.city,
+    addressRegion: company.address.region,
     addressCountry: "IN",
   },
   sameAs: company.socials.map((social) => social.href),
