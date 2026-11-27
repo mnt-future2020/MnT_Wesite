@@ -50,6 +50,9 @@ function headerSpace() {
 export function WhatWeBuild() {
   const sectionRef = useRef<HTMLElement>(null);
   const tabBarRef = useRef<HTMLElement>(null);
+  // Phones and tablets: the sticky holder around the tab bar, and whether it is stuck under the header.
+  const tabHolderRef = useRef<HTMLDivElement>(null);
+  const [tabsStuck, setTabsStuck] = useState(false);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
   const group = serviceGroups[active];
@@ -75,7 +78,16 @@ export function WhatWeBuild() {
   // Phones and tablets: the card that has reached the sticky tab bar decides the active tab.
   useEffect(() => {
     function onScroll() {
-      if (window.matchMedia(DESKTOP).matches) return;
+      if (window.matchMedia(DESKTOP).matches) {
+        setTabsStuck(false);
+        return;
+      }
+      // Stuck = sitting exactly at its sticky position (not before it gets there, nor after it is released).
+      const holder = tabHolderRef.current;
+      if (holder) {
+        const stickyTop = parseFloat(getComputedStyle(holder).top) || 0;
+        setTabsStuck(Math.abs(holder.getBoundingClientRect().top - stickyTop) < 1);
+      }
       const threshold = headerSpace() + (tabBarRef.current?.offsetHeight ?? 56) + 48;
       let current = 0;
       cardRefs.current.forEach((card, index) => {
@@ -139,44 +151,58 @@ export function WhatWeBuild() {
             Phones and tablets: a plain wrapper, so the tab bar can stick while the cards scroll.
           */}
           <div className="mt-8 flex flex-col lg:mt-6 lg:min-h-0 lg:overflow-hidden lg:rounded-2xl lg:border lg:border-border lg:bg-card lg:shadow-[0_24px_60px_-30px_rgb(11_16_36/0.18)] lg:[@media(max-height:820px)]:mt-4">
-            <nav
-              ref={tabBarRef}
-              aria-label="What we build"
-              className="z-20 shrink-0 overflow-hidden border-border bg-card max-lg:sticky max-lg:top-19 max-lg:rounded-xl max-lg:border max-lg:shadow-[0_12px_28px_-16px_rgb(11_16_36/0.35)] sm:max-lg:top-20 lg:border-b"
+            {/*
+              Phones and tablets: this holder sticks the tab bar just under the floating header.
+              While it is stuck, the holder itself turns the page colour (so nothing shows behind the
+              bar's rounded corners or in the thin band under it), a solid strip in the page colour
+              (before:) fills the space above it up to the top of the screen, and a short soft fade
+              (after:) sits under it: what you have scrolled past disappears (as on the Services
+              page). The strip only shows while stuck, so it never covers the heading above.
+            */}
+            <div
+              ref={tabHolderRef}
+              data-stuck={tabsStuck || undefined}
+              className="relative z-20 shrink-0 max-lg:sticky max-lg:top-19 max-lg:pb-2 sm:max-lg:top-20 max-lg:data-stuck:bg-background before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:hidden before:h-19 before:bg-background sm:before:h-20 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:hidden after:h-4 after:bg-linear-to-b after:from-background after:to-transparent max-lg:data-stuck:before:block max-lg:data-stuck:after:block"
             >
-              <div className="grid grid-cols-4">
-                {serviceGroups.map((tab, index) => {
-                  const isActive = index === active;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      aria-current={isActive ? "true" : undefined}
-                      onClick={() => selectTab(index)}
-                      className={cn(
-                        "relative border-r border-border px-2 py-4 text-sm font-medium transition-colors last:border-r-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:text-base max-lg:py-3.5 lg:[@media(max-height:820px)]:py-3",
-                        isActive
-                          ? "bg-p1/12 text-foreground lg:bg-p1/[0.04]"
-                          : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-                      )}
-                    >
-                      {/* Desktop: the tab's colour fills from left to right as you scroll through it,
-                          as a gradient from light to slightly darker at the moving edge. */}
-                      {isActive ? (
-                        <motion.span
-                          aria-hidden="true"
-                          className="absolute inset-0 hidden origin-left bg-linear-to-r from-p1/[0.04] via-p1/12 to-p1/25 lg:block"
-                          style={{ scaleX: tabProgress }}
-                        />
-                      ) : null}
-                      {/* Phones get the short label, so four tabs fit in one row. */}
-                      <span className="relative sm:hidden">{tab.tabShort}</span>
-                      <span className="relative max-sm:hidden">{tab.tab}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </nav>
+              <nav
+                ref={tabBarRef}
+                aria-label="What we build"
+                className="overflow-hidden border-border bg-card max-lg:rounded-xl max-lg:border max-lg:shadow-[0_12px_28px_-16px_rgb(11_16_36/0.35)] lg:border-b"
+              >
+                <div className="grid grid-cols-4">
+                  {serviceGroups.map((tab, index) => {
+                    const isActive = index === active;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        aria-current={isActive ? "true" : undefined}
+                        onClick={() => selectTab(index)}
+                        className={cn(
+                          "relative border-r border-border px-2 py-4 text-sm font-medium transition-colors last:border-r-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:text-base max-lg:py-3.5 lg:[@media(max-height:820px)]:py-3",
+                          isActive
+                            ? "bg-p1/12 text-foreground lg:bg-p1/[0.04]"
+                            : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                        )}
+                      >
+                        {/* Desktop: the tab's colour fills from left to right as you scroll through it,
+                            as a gradient from light to slightly darker at the moving edge. */}
+                        {isActive ? (
+                          <motion.span
+                            aria-hidden="true"
+                            className="absolute inset-0 hidden origin-left bg-linear-to-r from-p1/[0.04] via-p1/12 to-p1/25 lg:block"
+                            style={{ scaleX: tabProgress }}
+                          />
+                        ) : null}
+                        {/* Phones get the short label, so four tabs fit in one row. */}
+                        <span className="relative sm:hidden">{tab.tabShort}</span>
+                        <span className="relative max-sm:hidden">{tab.tab}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </nav>
+            </div>
 
             {/* Desktop: one service at a time. */}
             <div className="hidden lg:grid lg:grid-cols-2">
@@ -205,7 +231,7 @@ export function WhatWeBuild() {
             </div>
 
             {/* Phones and tablets: four separate cards with space between them. */}
-            <div className="mt-5 grid gap-5 lg:hidden">
+            <div className="mt-3 grid gap-5 lg:hidden">
               {serviceGroups.map((item, index) => (
                 <div
                   key={item.id}

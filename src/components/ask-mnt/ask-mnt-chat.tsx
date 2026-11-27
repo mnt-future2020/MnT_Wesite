@@ -45,7 +45,13 @@ export function AskMntChat({ variant }: { variant: "panel" | "sheet" }) {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Title bar */}
-      <div className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-5 pt-4 pb-3.5">
+      {/* Phone sheet: touch-none so a swipe down here moves the sheet instead of the page. */}
+      <div
+        className={cn(
+          "flex shrink-0 items-start justify-between gap-3 border-b border-border px-5 pt-4 pb-3.5",
+          variant === "sheet" && "touch-none"
+        )}
+      >
         <div>
           <div className="flex items-center gap-2">
             <h2 id="ask-mnt-title" className="font-heading text-lg leading-tight font-medium">

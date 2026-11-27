@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import { ArticleLoading } from "@/components/insights/article-loading";
 import { ArticleView } from "@/components/insights/article-view";
 import { articles, getArticle } from "@/content/insights";
 
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  */
 export default function ArticlePage({ params }: Props) {
   return (
-    <Suspense fallback={<div className="min-h-[80svh]" />}>
+    <Suspense fallback={<ArticleLoading />}>
       <Article params={params} />
     </Suspense>
   );

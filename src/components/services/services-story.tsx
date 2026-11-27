@@ -181,11 +181,14 @@ function PicturePanel({ area }: { area: ServiceArea }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.8, ease: EASE }}
-      className="relative h-[26rem] overflow-hidden rounded-[1.75rem] bg-linear-150 from-tint-1 via-p1-soft via-45% to-p1 sm:h-[32rem] lg:h-[36rem] lg:rounded-[2rem]"
+      className="relative max-h-[26rem] overflow-hidden rounded-[1.75rem] bg-linear-150 from-tint-1 via-p1-soft via-45% to-p1 sm:h-[32rem] sm:max-h-none lg:h-[36rem] lg:rounded-[2rem]"
     >
-      {/* Phones: the picture fills the width and only its bottom runs off. Tablets and desktop: it is
-          wider than the space left, so it also runs off the right edge (bigger on large screens). */}
-      <div className="absolute top-6 right-5 left-5 *:mx-0 *:max-w-none sm:top-10 sm:right-auto sm:left-10 sm:w-[34rem] lg:top-14 lg:left-14 xl:[zoom:1.25]">
+      {/* Phones: the picture fills the width and the panel fits its height (up to 26rem): a short,
+          wide picture (website + phone) gets a shorter panel instead of an empty space below it,
+          and a tall one still runs off the bottom. Tablets and desktop: fixed height, and the
+          picture is wider than the space left, so it also runs off the right edge (bigger on
+          large screens). */}
+      <div className="relative px-5 pt-6 pb-6 *:mx-0 *:max-w-none sm:absolute sm:top-10 sm:right-auto sm:left-10 sm:w-[34rem] sm:p-0 lg:top-14 lg:left-14 xl:[zoom:1.25]">
         <Visual />
       </div>
     </motion.div>

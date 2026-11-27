@@ -78,7 +78,6 @@ export const suggestedQuestions = demoAnswers.slice(0, 3).map((item) => item.que
 /** Every word the assistant shows. */
 export const askMntText = {
   name: "Ask MnT",
-  shortName: "Ask",
   subtitle: "Answers from our own pages",
   demoBadge: "Demo",
   greeting: "Ask anything about MnT Future. A real person from our team reads every enquiry.",

@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect } from "react";
-import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import { AnimatePresence, MotionConfig, motion, useDragControls, type PanInfo } from "motion/react";
 import { AskMntChat } from "./ask-mnt-chat";
 import { AskMntNudges } from "./ask-mnt-nudges";
 import { askMntSwitches } from "./config";
@@ -13,6 +13,7 @@ import { closeAskMnt, useAskMntPanel } from "./store";
  *   Desktop: the "Ask MnT" header button opens a tall panel on the right;
  *            the page stays visible and usable.
  *   Phones and tablets: the "Ask" header button opens a full-screen sheet from the bottom.
+ *            Swipe it down by its top (the grab bar and the title row) to close it.
  *   Everywhere: two nudges, beside Our work and the FAQ.
  * "Reduce motion" on the visitor's device turns the movement off (MotionConfig "user").
  */
@@ -25,9 +26,30 @@ export function AskMnt() {
   );
 }
 
+/** How far (px) or how fast (px/s) a downward swipe must go to close the phone sheet. */
+const CLOSE_DISTANCE = 120;
+const CLOSE_SPEED = 500;
+
+/** The top part of the sheet (grab bar + title row) that starts a swipe, in px. */
+const GRAB_ZONE = 96;
+
 function AskMntLayer() {
   const { open } = useAskMntPanel();
   const isDesktop = useIsDesktop();
+  const dragControls = useDragControls();
+
+  // Phones: a swipe that starts on the top of the sheet drags it down; buttons there still work.
+  function startSwipe(event: React.PointerEvent<HTMLElement>) {
+    const target = event.target as Element;
+    if (target.closest("button, a, input, textarea")) return;
+    const top = event.currentTarget.getBoundingClientRect().top;
+    if (event.clientY - top > GRAB_ZONE) return;
+    dragControls.start(event);
+  }
+
+  function endSwipe(_event: PointerEvent | MouseEvent | TouchEvent, info: PanInfo) {
+    if (info.offset.y > CLOSE_DISTANCE || info.velocity.y > CLOSE_SPEED) closeAskMnt();
+  }
 
   // Esc closes it.
   useEffect(() => {
@@ -98,9 +120,20 @@ function AskMntLayer() {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.38, ease: EASE }}
+            // Swipe down to close: only from the top part (see startSwipe), so the chat still scrolls.
+            drag="y"
+            dragControls={dragControls}
+            dragListener={false}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 1 }}
+            onDragEnd={endSwipe}
+            onPointerDown={startSwipe}
             className="fixed inset-x-0 top-[max(0.75rem,env(safe-area-inset-top))] bottom-0 z-[70] flex flex-col overflow-hidden rounded-t-[1.75rem] bg-card text-foreground shadow-[0_-20px_50px_-20px_rgb(12_26_46/0.4)]"
           >
-            <div aria-hidden="true" className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-border" />
+            {/* The grab bar: a bigger invisible strip around it, easy to catch with a thumb. */}
+            <div aria-hidden="true" className="flex h-5 shrink-0 cursor-grab touch-none items-end justify-center">
+              <span className="h-1.5 w-10 rounded-full bg-border" />
+            </div>
             <AskMntChat variant="sheet" />
           </motion.section>
         ) : null}
